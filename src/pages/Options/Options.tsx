@@ -15,7 +15,10 @@ import {
 } from "@duik/it";
 import toastr from "toastr";
 
-import { SelectTranslateEngine } from "../../components";
+import {
+  SelectAutoplayPronunciation,
+  SelectTranslateEngine,
+} from "../../components";
 import config from "../../utils/config";
 
 // import cls from "./Options.module.scss";
@@ -25,11 +28,13 @@ interface OptionsState {
   currentUser: any;
   selectionTranslateMode: string;
   selectionTranslateEngine: string;
+  autoplayPronunciation: string;
 }
 
 const defaultOptions = {
   selectionTranslateMode: "enable-translate-tooltip",
-  selectionTranslateEngine: "youdao-web"
+  selectionTranslateEngine: "youdao-web",
+  autoplayPronunciation: "us-pronunciation",
 };
 
 class Options extends React.Component<OptionsProps, OptionsState> {
@@ -38,8 +43,7 @@ class Options extends React.Component<OptionsProps, OptionsState> {
 
     this.state = {
       currentUser: null,
-      selectionTranslateMode: "",
-      selectionTranslateEngine: ""
+      ...defaultOptions,
     };
   }
 
@@ -82,12 +86,17 @@ class Options extends React.Component<OptionsProps, OptionsState> {
   handleClickSubmit = (event: any) => {
     event.preventDefault();
 
-    const { selectionTranslateMode, selectionTranslateEngine } = this.state;
+    const {
+      selectionTranslateMode,
+      selectionTranslateEngine,
+      autoplayPronunciation,
+    } = this.state;
 
     chrome.storage.sync.set(
       {
         selectionTranslateMode,
-        selectionTranslateEngine
+        selectionTranslateEngine,
+        autoplayPronunciation,
       },
       () => {
         toastr.success("选项已保存。");
@@ -113,7 +122,8 @@ class Options extends React.Component<OptionsProps, OptionsState> {
     const {
       currentUser,
       selectionTranslateMode,
-      selectionTranslateEngine
+      selectionTranslateEngine,
+      autoplayPronunciation,
     } = this.state;
     return (
       <>
@@ -236,6 +246,16 @@ class Options extends React.Component<OptionsProps, OptionsState> {
                           this.setState({
                             selectionTranslateMode: e.currentTarget.value
                           });
+                        }}
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <SelectAutoplayPronunciation
+                        block
+                        label="自动发音"
+                        activeOption={autoplayPronunciation}
+                        onOptionClick={({ value }: any) => {
+                          this.setState({ autoplayPronunciation: value });
                         }}
                       />
                     </FormGroup>

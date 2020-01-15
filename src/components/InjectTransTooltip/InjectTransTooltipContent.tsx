@@ -169,7 +169,7 @@ class InjectTransTooltipContent extends React.Component<
   }
 
   componentDidMount() {
-    const keys = ['currentUser'];
+    const keys = ['currentUser', 'autoplayPronunciation'];
     const callback = (result: any) => {
       const currentUser = result.currentUser
         ? JSON.parse(result.currentUser)
@@ -177,6 +177,20 @@ class InjectTransTooltipContent extends React.Component<
       this.setState({ currentUser }, () => {
         if (currentUser) this.reloadData();
       });
+
+      const autoplayPronunciation = result.autoplayPronunciation || 'disabled';
+      if (autoplayPronunciation !== 'disabled') {
+        let pronunciationUrl = this.props.lookUpResult?.usPronunciationUrl;
+        if (autoplayPronunciation.startsWith('uk')) {
+          pronunciationUrl = this.props.lookUpResult?.ukPronunciationUrl;
+        }
+
+        chrome.runtime.sendMessage({
+          method: 'playAudio',
+          arguments: { url: pronunciationUrl }
+        });
+      }
+
     };
     chrome.storage.sync.get(keys, callback);
   }
