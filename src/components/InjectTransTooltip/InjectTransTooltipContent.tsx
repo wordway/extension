@@ -19,6 +19,14 @@ import { sharedApiClient } from '../../networking';
 const IpaItem = (props: any) => {
   const { flag, ipa, pronunciationUrl } = props;
   if (!ipa && !pronunciationUrl) return <div />;
+
+  const playPronunciation = () => {
+    chrome.runtime.sendMessage({
+      method: 'playAudio',
+      arguments: { url: pronunciationUrl }
+    });
+  }
+
   return (
     <div
       style={{
@@ -47,11 +55,11 @@ const IpaItem = (props: any) => {
           marginTop: '2px',
           outline: 'none'
         }}
+        onMouseEnter={() => {
+          playPronunciation();
+        }}
         onClick={() => {
-          chrome.runtime.sendMessage({
-            method: 'playAudio',
-            arguments: { url: pronunciationUrl }
-          });
+          playPronunciation();
         }}
       >
         <FeatherIcons.Volume2 size={20} color="var(--indigo)" />
