@@ -141,7 +141,7 @@ const TenseListItem = (props: any) => {
           color: 'var(--indigo)'
         }}
       >
-        {values}
+        {values.join(', ')}
       </span>
     </>
   );
