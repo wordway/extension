@@ -117,9 +117,26 @@ class InjectTransTooltip extends React.Component<
     if (switching) return <div />;
 
     let popperBody = this.renderTransTooltipIcon();
+    let popperClassNames = (_: any): any => {};
 
     if (lookUpResult || lookUpError) {
       popperBody = this.renderTransTooltipContent();
+      popperClassNames = (placement: any): any => {
+        return {
+          [cls['popper-fade-in-up']]:
+            (placement || 'bottom').startsWith('top') &&
+            this.state.visible,
+          [cls['popper-fade-in-down']]:
+            (placement || 'bottom').startsWith('bottom') &&
+            this.state.visible,
+          [cls['popper-fade-out-up']]:
+            (placement || 'bottom').startsWith('top') &&
+            !this.state.visible,
+          [cls['popper-fade-out-down']]:
+            (placement || 'bottom').startsWith('bottom') &&
+            !this.state.visible
+        }
+      }
     }
 
     return (
@@ -128,18 +145,7 @@ class InjectTransTooltip extends React.Component<
           <div ref={ref} className={cls['trans-tooltip']} style={style}>
             <div
               className={classNames(cls['popper'], {
-                [cls['popper-fade-in-up']]:
-                  (placement || 'bottom').startsWith('top') &&
-                  this.state.visible,
-                [cls['popper-fade-in-down']]:
-                  (placement || 'bottom').startsWith('bottom') &&
-                  this.state.visible,
-                [cls['popper-fade-out-up']]:
-                  (placement || 'bottom').startsWith('top') &&
-                  !this.state.visible,
-                [cls['popper-fade-out-down']]:
-                  (placement || 'bottom').startsWith('bottom') &&
-                  !this.state.visible
+                ...popperClassNames(placement),
               })}
             >
               <div className={cls['popper-body']}>{popperBody}</div>

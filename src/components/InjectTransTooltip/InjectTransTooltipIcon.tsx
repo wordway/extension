@@ -91,6 +91,7 @@ class InjectTransTooltipIcon extends React.Component<
           style={{
             border: 'none'
           }}
+          sm
           loading={this.state.loading}
           onClick={() => this.reloadData()}
           {...this.props}
@@ -98,7 +99,7 @@ class InjectTransTooltipIcon extends React.Component<
           <img
             src={r('/images/trans_tooltip_icon.png')}
             alt="icon"
-            style={{ width: '34px' }}
+            style={{ width: '28px' }}
           />
         </Button>
       </ShadowRoot>
