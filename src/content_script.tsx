@@ -39,10 +39,11 @@ TranslateOverrides.fetch = (
 };
 
 const onMouseUp = (e: any) => {
-  if (e.path.length > 0) {
-    const firstTagName = e.path[0].tagName;
+  const path = e.path || (e.composedPath && e.composedPath());
+  if (path.length > 0) {
+    const firstTagName = path[0].tagName;
     if (firstTagName === 'INPUT' || firstTagName === 'TEXTAREA') return;
-    if (e.path.findIndex(({ id }: any) => id === ELEMENT_ID) >= 0) return;
+    if (path.findIndex(({ id }: any) => id === ELEMENT_ID) >= 0) return;
   }
 
   let selection: any = document.getSelection();

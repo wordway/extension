@@ -10,9 +10,13 @@
     "48": "images/icon48.png",
     "128": "images/icon128.png"
   },
+  "browser_action": {
+    "default_icon": "images/icon16.png",
+    "default_popup": "popup.html"
+  },
   "background": {
     "scripts": ["static/js/background.js"],
-    "persistent": false
+    "persistent": true
   },
   "content_scripts": [
     {
@@ -27,7 +31,17 @@
     "page": "options.html",
     "open_in_tab": true
   },
-  "permissions": ["background", "tabs", "storage"],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "web_accessible_resources": ["images/*", "static/media/*"]
+  "permissions": [
+    "<all_urls>",
+    "background",
+    "tabs",
+    "storage"
+  ],
+  "web_accessible_resources": ["images/*", "static/media/*"],
+  "applications": {
+    "gecko": {
+      "id": "addon@wordway.app",
+      "strict_min_version": "42.0"
+    }
+  }
 }

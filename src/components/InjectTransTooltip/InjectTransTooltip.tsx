@@ -65,7 +65,8 @@ class InjectTransTooltip extends React.Component<
 
   onMouseUp = () => {};
 
-  onMouseDown = ({ path = [] }: any) => {
+  onMouseDown = (e: any) => {
+    const path = e.path || (e.composedPath && e.composedPath());
     if (path.findIndex(({ id }: any) => id === '___wordway') >= 0) return;
 
     this.handleClose();
@@ -140,7 +141,9 @@ class InjectTransTooltip extends React.Component<
     }
 
     return (
-      <Popper referenceElement={this.virtualReferenceElement}>
+      <Popper
+        referenceElement={this.virtualReferenceElement}
+      >
         {({ ref, style, placement, arrowProps }) => (
           <div ref={ref} className={cls['trans-tooltip']} style={style}>
             <div

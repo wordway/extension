@@ -16,7 +16,6 @@ import {
 import toastr from "toastr";
 
 import {
-  SelectAutoplayPronunciation,
   SelectTranslateEngine,
 } from "../../components";
 import config from "../../utils/config";
@@ -141,7 +140,7 @@ class Options extends React.Component<OptionsProps, OptionsState> {
             <Widget>
               <WidgetContent>
                 <FormGroupContainer horizontal>
-                  <h3>扩展程序选项</h3>
+                  <h3>扩展选项</h3>
                   <div
                     style={{
                       display: "flex",
@@ -250,14 +249,53 @@ class Options extends React.Component<OptionsProps, OptionsState> {
                       />
                     </FormGroup>
                     <FormGroup>
-                      <SelectAutoplayPronunciation
-                        block
-                        label="自动发音"
-                        activeOption={autoplayPronunciation}
-                        onOptionClick={({ value }: any) => {
-                          this.setState({ autoplayPronunciation: value });
+                      <span className="content-title">
+                        自动发音
+                      </span>
+                      <FormGroupContainer
+                        horizontal
+                        style={{
+                          marginTop: "auto"
                         }}
-                      />
+                      >
+                        <Radio
+                          checked={autoplayPronunciation === "disabled"}
+                          label="禁用该功能"
+                          name="autoplayPronunciation"
+                          value="disabled"
+                          onChange={e => {
+                            this.setState({
+                              autoplayPronunciation: e.currentTarget.value
+                            });
+                          }}
+                        />
+                        <Radio
+                          checked={
+                            autoplayPronunciation === "us-pronunciation"
+                          }
+                          label="美式发音"
+                          name="autoplayPronunciation"
+                          value="us-pronunciation"
+                          onChange={e => {
+                            this.setState({
+                              autoplayPronunciation: e.currentTarget.value
+                            });
+                          }}
+                        />
+                        <Radio
+                          checked={
+                            autoplayPronunciation === "uk-pronunciation"
+                          }
+                          label="英式发音"
+                          name="autoplayPronunciation"
+                          value="uk-pronunciation"
+                          onChange={e => {
+                            this.setState({
+                              autoplayPronunciation: e.currentTarget.value
+                            });
+                          }}
+                        />
+                      </FormGroupContainer>
                     </FormGroup>
                     <FormGroup>
                       <SelectTranslateEngine
