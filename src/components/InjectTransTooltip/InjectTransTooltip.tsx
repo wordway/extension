@@ -36,6 +36,7 @@ interface InjectTransTooltipProps {
 }
 
 interface InjectTransTooltipState {
+  virtualReferenceElement: VirtualReferenceElement;
   visible: boolean;
   switching: boolean;
   lookUpResult?: LookUpResult;
@@ -46,21 +47,22 @@ class InjectTransTooltip extends React.Component<
   InjectTransTooltipProps,
   InjectTransTooltipState
 > {
-  virtualReferenceElement: VirtualReferenceElement;
-
   constructor(props: InjectTransTooltipProps, state: InjectTransTooltipState) {
     super(props, state);
 
-    this.virtualReferenceElement = new VirtualReferenceElement(
-      props.boundingClientRect
-    );
-
-    this.state = { visible: true, switching: false };
+    this.state = {
+      virtualReferenceElement: new VirtualReferenceElement(
+        props.boundingClientRect
+      ),
+      visible: true,
+      switching: false,
+    };
   }
 
   componentDidMount() {
     document.addEventListener('mouseup', this.onMouseUp);
     document.addEventListener('mousedown', this.onMouseDown);
+    document.addEventListener('scroll', this.onScroll);
   }
 
   onMouseUp = () => {};
@@ -70,6 +72,18 @@ class InjectTransTooltip extends React.Component<
     if (path.findIndex(({ id }: any) => id === '___wordway') >= 0) return;
 
     this.handleClose();
+  };
+
+  onScroll = (e: any) => {
+    const selection: any = document.getSelection();
+    const selectionRange = selection.getRangeAt(0);
+    const boundingClientRect = selectionRange.getBoundingClientRect();
+
+    this.setState({
+      virtualReferenceElement: new VirtualReferenceElement(
+        boundingClientRect
+      ),
+    })
   };
 
   handleClose = () => {
@@ -142,7 +156,7 @@ class InjectTransTooltip extends React.Component<
 
     return (
       <Popper
-        referenceElement={this.virtualReferenceElement}
+        referenceElement={this.state.virtualReferenceElement}
       >
         {({ ref, style, placement, arrowProps }) => (
           <div ref={ref} className={cls['trans-tooltip']} style={style}>
