@@ -59,7 +59,7 @@ class ApiClient {
     );
 
     chrome.storage.sync.get(['accessToken'], (result: any) => {
-      this.accessToken = result.accessToken;
+      this.accessToken = result?.accessToken;
     });
     chrome.storage.onChanged.addListener((changes, namespace) => {
       for (const key in changes) {

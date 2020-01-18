@@ -1,6 +1,9 @@
+import '../../utils/isomorphic-translate-api';
+
 import * as React from 'react';
 import { Button } from '@duik/it';
 import Translate, { LookUpResult } from '@wordway/translate-api';
+import CloudoptAIEngine from '@wordway/translate-engine-cloudoptai'
 import BingWebEngine from '@wordway/translate-webengine-bing';
 import YoudaoWebEngine from '@wordway/translate-webengine-youdao';
 
@@ -29,10 +32,15 @@ class InjectTransTooltipIcon extends React.Component<
   ) {
     super(props, state);
 
+    const cloudoptAIEngine = new CloudoptAIEngine();
     const bingWebEngine = new BingWebEngine();
     const youdaoWebEngine = new YoudaoWebEngine();
 
-    this.translate = new Translate([bingWebEngine, youdaoWebEngine]);
+    this.translate = new Translate([
+      cloudoptAIEngine,
+      bingWebEngine,
+      youdaoWebEngine,
+    ]);
 
     this.state = {
       selectionTranslateMode: 'enable-translate-tooltip',

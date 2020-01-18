@@ -1,42 +1,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Method } from 'axios';
-import { TranslateOverrides } from '@wordway/translate-api';
 
 import { InjectTransTooltip } from './components';
-import { sharedApiClient } from './networking';
 
 const ELEMENT_ID = '___wordway';
-
-TranslateOverrides.fetch = (
-  input: RequestInfo,
-  init?: RequestInit
-): Promise<Response> => {
-  return new Promise<any>((resolve, reject) => {
-    const successCallback = (response: any) => {
-      resolve({
-        headers: response.headers,
-        ok: true,
-        status: response.status,
-        statusText: response.statusText,
-        json: () => response.data,
-        text: () => response.data
-      });
-    };
-    const failureCallback = (error: any) => reject(error);
-
-    const url = input.toString();
-    const method: Method = (init?.method || 'GET') as Method;
-
-    sharedApiClient
-      .request({
-        method,
-        url
-      })
-      .then(successCallback)
-      .catch(failureCallback);
-  });
-};
 
 const onMouseUp = (e: any) => {
   const path = e.path || (e.composedPath && e.composedPath());
@@ -46,7 +13,7 @@ const onMouseUp = (e: any) => {
     if (path.findIndex(({ id }: any) => id === ELEMENT_ID) >= 0) return;
   }
 
-  let selection: any = document.getSelection();
+  const selection: any = document.getSelection();
   const selectionRange = selection.getRangeAt(0);
   const selectionRect = selectionRange.getBoundingClientRect();
   // 未获取 x/y 轴的值，不进行任何操作
