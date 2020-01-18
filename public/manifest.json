@@ -23,8 +23,8 @@
       "matches": ["<all_urls>"],
       "css": ["static/css/content_script.css"],
       "js": ["static/js/content_script.js"],
-      "run_at": "document_end",
-      "all_frames": false
+      "all_frames" : true ,
+      "run_at" : "document_start"
     }
   ],
   "options_ui": {
