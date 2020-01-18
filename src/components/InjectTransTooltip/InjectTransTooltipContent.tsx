@@ -183,7 +183,8 @@ class InjectTransTooltipContent extends React.Component<
         ? JSON.parse(result.currentUser)
         : null;
       this.setState({ currentUser }, () => {
-        if (currentUser) this.reloadData();
+        if (currentUser && this.props.lookUpResult)
+          this.reloadData();
       });
 
       const autoplayPronunciation = result.autoplayPronunciation || 'disabled';
