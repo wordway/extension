@@ -220,7 +220,7 @@ class InjectTransTooltipContent extends React.Component<
         wordbookWord
       });
     } catch (e) {
-      console.log(e);
+      // ignore this error.
     }
   };
 

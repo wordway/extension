@@ -209,17 +209,6 @@ class Options extends React.Component<OptionsProps, OptionsState> {
                         弹出翻译（在选中单词或短语时）
                       </span>
                       <Radio
-                        checked={selectionTranslateMode === "disabled"}
-                        label="禁用该功能"
-                        name="selectionTranslateMode"
-                        value="disabled"
-                        onChange={e => {
-                          this.setState({
-                            selectionTranslateMode: e.currentTarget.value
-                          });
-                        }}
-                      />
-                      <Radio
                         checked={
                           selectionTranslateMode === "enable-translate-icon"
                         }
@@ -241,6 +230,18 @@ class Options extends React.Component<OptionsProps, OptionsState> {
                         name="selectionTranslateMode"
                         description="自动将选中的单词或短语发送至翻译引擎，以确定是否应显示翻译。"
                         value="enable-translate-tooltip"
+                        onChange={e => {
+                          this.setState({
+                            selectionTranslateMode: e.currentTarget.value
+                          });
+                        }}
+                      />
+                      <Radio
+                        checked={selectionTranslateMode === "disabled"}
+                        label="不显示图标和弹出式翻译"
+                        description="此时您可以按下快捷键「Shift」来调出弹出式翻译。"
+                        name="selectionTranslateMode"
+                        value="disabled"
                         onChange={e => {
                           this.setState({
                             selectionTranslateMode: e.currentTarget.value

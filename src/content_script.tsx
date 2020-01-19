@@ -5,21 +5,17 @@ import { InjectTransTooltip } from './components';
 
 const ELEMENT_ID = '___wordway';
 
-const onMouseUp = (e: any) => {
-  const path = e.path || (e.composedPath && e.composedPath());
-  if (path.length > 0) {
-    const firstTagName = path[0].tagName;
-    if (firstTagName === 'INPUT' || firstTagName === 'TEXTAREA') return;
-    if (path.findIndex(({ id }: any) => id === ELEMENT_ID) >= 0) return;
-  }
-
+const injectTransTooltip = ({ autoload = false }: any) => {
   const selection: any = document.getSelection();
+
+  if (selection.rangeCount === 0) return;
+
   const selectionRange = selection.getRangeAt(0);
   const selectionRect = selectionRange.getBoundingClientRect();
   // 未获取 x/y 轴的值，不进行任何操作
   if (selectionRect.x === 0 && selectionRect.y === 0) return;
 
-  const q = selection.toString().trim();
+  const q = selection.toString().trim() || '';
 
   let el = document.getElementById(ELEMENT_ID);
 
@@ -43,7 +39,8 @@ const onMouseUp = (e: any) => {
 
   ReactDOM.render(
     <InjectTransTooltip
-      q={selection.toString().trim()}
+      q={q}
+      autoload={autoload}
       boundingClientRect={selectionRect}
       onShow={() => {}}
       onHide={() => {
@@ -52,23 +49,42 @@ const onMouseUp = (e: any) => {
     />,
     el
   );
-};
+}
 
-let mouseupTimer: any;
-document.addEventListener('mouseup', (e: any) => {
-  const keys = ['selectionTranslateMode'];
-  const callback = ({ selectionTranslateMode }: any) => {
-    if (selectionTranslateMode === 'disabled') return;
-
-    if (!mouseupTimer) clearTimeout(mouseupTimer);
-    mouseupTimer = setTimeout(() => onMouseUp(e), 300);
-  };
-  chrome.storage.sync.get(keys, callback);
-});
-
-window.addEventListener('message', e => {
+const onMessage = (e: any) => {
   const { source = '', payload } = e.data || {};
-  if (source.indexOf('wordway-') === -1) return;
+  if (source !== 'wordway-extension-bridge') return;
 
   chrome.runtime.sendMessage(payload);
-});
+};
+
+const onMouseUp = (e: any) => {}
+
+const onMouseDown = (e: any) => {
+  const path = e.path || (e.composedPath && e.composedPath());
+  if (path.length > 0) {
+    const firstTagName = path[0].tagName;
+    if (firstTagName === 'INPUT' || firstTagName === 'TEXTAREA') return;
+    if (path.findIndex(({ id }: any) => id === ELEMENT_ID) >= 0) return;
+  }
+  const keys = ['selectionTranslateMode'];
+  const callback = (r: any) => {
+    if (r.selectionTranslateMode === 'disabled') return;
+
+    injectTransTooltip({
+      autoload: r.selectionTranslateMode === "enable-translate-tooltip"
+    });
+  };
+  chrome.storage.sync.get(keys, callback);
+};
+
+const onKeyDown = (e: KeyboardEvent) => {
+  if (!e.shiftKey) return;
+
+  injectTransTooltip({ autoload: true });
+};
+
+window.addEventListener('message', onMessage);
+window.addEventListener('mouseup', onMouseUp);
+window.addEventListener('mousedown', onMouseDown);
+window.addEventListener('keydown', onKeyDown);

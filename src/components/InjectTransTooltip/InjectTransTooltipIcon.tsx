@@ -12,10 +12,10 @@ import r from '../../utils/r';
 
 interface InjectTransTooltipIconProps {
   q: string;
+  autoload: boolean;
   onLoadComplete: any;
 }
 interface InjectTransTooltipIconState {
-  selectionTranslateMode?: string;
   selectionTranslateEngine?: string;
   loading: boolean;
 }
@@ -43,20 +43,19 @@ class InjectTransTooltipIcon extends React.Component<
     ]);
 
     this.state = {
-      selectionTranslateMode: 'enable-translate-tooltip',
       selectionTranslateEngine: 'youdao-web',
       loading: false
     };
   }
 
   componentDidMount() {
-    const keys = ['selectionTranslateMode', 'selectionTranslateEngine'];
+    const { autoload } = this.props;
+
+    const keys = ['selectionTranslateEngine'];
     const callback = (result: any) => {
-      this.setState({ ...result });
-      const { selectionTranslateMode } = result;
-      if (selectionTranslateMode === 'enable-translate-tooltip') {
-        this.reloadData();
-      }
+      this.setState({ ...result }, () => {
+        if (autoload) this.reloadData();
+      });
     };
     chrome.storage.sync.get(keys, callback);
   }
@@ -85,7 +84,7 @@ class InjectTransTooltipIcon extends React.Component<
             onLoadComplete(lookUpResult, lookUpError);
           });
         },
-        usedTime > 100 ? 0 : 100 - usedTime
+        usedTime > 60 ? 0 : 60 - usedTime
       );
     }
   };

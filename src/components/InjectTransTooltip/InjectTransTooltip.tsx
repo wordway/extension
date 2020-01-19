@@ -30,6 +30,7 @@ class VirtualReferenceElement {
 
 interface InjectTransTooltipProps {
   q: string;
+  autoload: boolean;
   boundingClientRect: DOMRect;
   onShow: any;
   onHide: any;
@@ -60,9 +61,10 @@ class InjectTransTooltip extends React.Component<
   }
 
   componentDidMount() {
-    document.addEventListener('mouseup', this.onMouseUp);
-    document.addEventListener('mousedown', this.onMouseDown);
-    document.addEventListener('scroll', this.onScroll);
+    window.addEventListener('mouseup', this.onMouseUp);
+    window.addEventListener('mousedown', this.onMouseDown);
+    window.addEventListener('keydown', this.onKeyDown);
+    window.addEventListener('scroll', this.onScroll);
   }
 
   onMouseUp = () => {};
@@ -73,6 +75,12 @@ class InjectTransTooltip extends React.Component<
 
     this.handleClose();
   };
+
+  onKeyDown = (e: KeyboardEvent) => {
+    if (!e.shiftKey) return;
+
+    this.handleClose();
+  }
 
   onScroll = (e: any) => {
     const selection: any = document.getSelection();
@@ -97,7 +105,7 @@ class InjectTransTooltip extends React.Component<
   };
 
   renderTransTooltipIcon = () => {
-    const { q } = this.props;
+    const { q, autoload } = this.props;
     const handleLoadComplete = (lookUpResult: any, lookUpError: any) => {
       this.setState({ switching: true });
       setTimeout(() => {
@@ -109,7 +117,13 @@ class InjectTransTooltip extends React.Component<
       }, 1);
     };
 
-    return <InjectTransTooltipIcon q={q} onLoadComplete={handleLoadComplete} />;
+    return (
+      <InjectTransTooltipIcon
+        q={q}
+        autoload={autoload}
+        onLoadComplete={handleLoadComplete}
+      />
+    );
   };
 
   renderTransTooltipContent = () => {
