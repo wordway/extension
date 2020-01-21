@@ -15,10 +15,10 @@ class UserConfig {
     ];
     chrome.storage.sync.get(keys, (result: any) => {
       const { currentUser, ...rest } = result;
-      callback({
+      callback(Object.assign(new UserConfig(), {
         currentUser: currentUser ? JSON.parse(currentUser) : null,
         ...rest
-      });
+      }));
     });
   }
 

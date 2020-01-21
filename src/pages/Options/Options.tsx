@@ -42,15 +42,17 @@ class Options extends React.Component<OptionsProps, OptionsState> {
   }
 
   componentDidMount() {
+    this.reloadConfig();
     chrome.storage.onChanged.addListener((changes, _) => {
       for (const key in changes) {
         if (key === "currentUser") {
-          const storageChange = changes[key];
+          const { currentUser } = this.state;
+          const { newValue } = changes[key];
 
-          if (!storageChange.oldValue) {
+          if (!currentUser && newValue) {
             toastr.success("登录成功。");
           }
-          if (!storageChange.newValue) {
+          if (currentUser && !newValue) {
             toastr.success("退出成功。");
           }
 
@@ -58,8 +60,6 @@ class Options extends React.Component<OptionsProps, OptionsState> {
         }
       }
     });
-
-    this.reloadConfig();
   }
 
   reloadConfig = () => {
@@ -129,14 +129,21 @@ class Options extends React.Component<OptionsProps, OptionsState> {
           ...newUserConfig,
         });
 
-        toastr.success("选项已重置。");
+        toastr.success("选项已保存。");
       });
   };
 
   handleClickReset = (event: any) => {
     event.preventDefault();
 
-    UserConfig.save(new UserConfig(), (newUserConfig: UserConfig) => {
+    const {
+      userConfig,
+    } = this.state;
+
+    UserConfig.save(Object.assign(new UserConfig(), {
+      accessToken: userConfig.accessToken,
+      currentUser: userConfig.currentUser,
+    }), (newUserConfig: UserConfig) => {
       this.setState({
         userConfig: newUserConfig,
         ...newUserConfig,
