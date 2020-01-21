@@ -4,8 +4,9 @@ import axios, {
   AxiosRequestConfig,
   AxiosResponse
 } from 'axios';
-import sharedConfig from '../utils/config';
+import env from '../utils/env';
 import normalize from '../utils/normalize';
+import UserConfig from '../utils/user-config';
 
 class ApiClient {
   private sharedAxios: AxiosInstance;
@@ -14,7 +15,7 @@ class ApiClient {
 
   public constructor() {
     this.sharedAxios = axios.create({
-      baseURL: sharedConfig.apiURL
+      baseURL: env.apiURL
     });
 
     this.sharedAxios.interceptors.request.use(
@@ -22,7 +23,7 @@ class ApiClient {
         const baseURL = config.baseURL?.toString() ?? '';
         let nextConfig = config;
 
-        if (baseURL.startsWith(sharedConfig.apiURL)) {
+        if (baseURL.startsWith(env.apiURL || '')) {
           nextConfig = Object.assign({}, config, {
             data: normalize('snakecase', config.data)
           });
@@ -38,7 +39,7 @@ class ApiClient {
       (response: AxiosResponse): AxiosResponse => {
         const url = response.request.url?.toString() ?? '';
         let nextResponse = response;
-        if (url.startsWith(sharedConfig.apiURL)) {
+        if (url.startsWith(env.apiURL)) {
           nextResponse = Object.assign({}, response, {
             data: normalize('camelcase', response.data)
           });
@@ -58,9 +59,9 @@ class ApiClient {
       }
     );
 
-    chrome.storage.sync.get(['accessToken'], (result: any) => {
-      this.accessToken = result?.accessToken;
-    });
+    UserConfig.load((userConfig: UserConfig) => {
+      this.accessToken = userConfig.accessToken;
+    })
     chrome.storage.onChanged.addListener((changes, namespace) => {
       for (const key in changes) {
         if (key === 'accessToken') {

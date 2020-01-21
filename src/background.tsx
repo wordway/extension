@@ -2,6 +2,7 @@
 // import * as ReactDOM from "react-dom";
 
 import { sharedApiClient } from './networking';
+import UserConfig from './utils/user-config';
 
 // Listen to messages sent from other parts of the extension.
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -22,17 +23,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   const _handleMessageOpenOptionsPage = () => {
     chrome.runtime.openOptionsPage();
-
-    const { accessToken, currentUser } = request.arguments;
-
-    chrome.storage.sync.set(
-      {
-        accessToken,
-        currentUser
-      },
-      () => {}
-    );
-
     return true;
   };
 
@@ -46,12 +36,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   };
 
   const _handleMessageAccountLogin = () => {
-    chrome.storage.sync.set(request.arguments, () => {});
+    UserConfig.save(request.arguments, () => {});
     return true;
   };
 
   const _handleMessageAccountLogout = () => {
-    chrome.storage.sync.remove(['accessToken', 'currentUser']);
+    UserConfig.save({
+      accessToken: null,
+      currentUser: null,
+    }, () => {});
     return true;
   };
 

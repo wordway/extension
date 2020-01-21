@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { InjectTransTooltip } from './components';
+import UserConfig from './utils/user-config';
 
 const ELEMENT_ID = '___wordway';
 
@@ -67,15 +68,17 @@ const onMouseDown = (e: any) => {
     if (firstTagName === 'INPUT' || firstTagName === 'TEXTAREA') return;
     if (path.findIndex(({ id }: any) => id === ELEMENT_ID) >= 0) return;
   }
-  const keys = ['selectionTranslateMode'];
-  const callback = (r: any) => {
-    if (r.selectionTranslateMode === 'disabled') return;
+
+  const callback = (userConfig: UserConfig) => {
+    const selectionTranslateMode = userConfig.selectionTranslateMode;
+
+    if (selectionTranslateMode === 'disabled') return;
 
     injectTransTooltip({
-      autoload: r.selectionTranslateMode === "enable-translate-tooltip"
+      autoload: selectionTranslateMode === "enable-translate-tooltip"
     });
   };
-  chrome.storage.sync.get(keys, callback);
+  UserConfig.load(callback)
 };
 
 const onKeyDown = (e: KeyboardEvent) => {

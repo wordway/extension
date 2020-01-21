@@ -1,19 +1,23 @@
+import '../../utils/isomorphic-translate-api';
+
 import * as React from 'react';
 import {
   Button,
   FormGroupContainer,
-  FormGroup,
   TextField,
   Widget,
   WidgetContent
 } from '@duik/it';
+import { LookUpResult } from '@wordway/translate-api';
 
 // import cls from "./Popup.module.scss";
 
 interface PopupProps {}
 
 interface PopupState {
-  text: string;
+  q: string;
+  lookUpResult?: LookUpResult;
+  lookUpError?: Error;
 }
 
 class Popup extends React.Component<PopupProps, PopupState> {
@@ -21,36 +25,55 @@ class Popup extends React.Component<PopupProps, PopupState> {
     super(props, state);
 
     this.state = {
-      text: ''
+      q: ''
     };
   }
+
+  handleClickSubmit = (event: any) => {
+    event.preventDefault();
+
+    const {
+      q,
+    } = this.state;
+
+    this.setState({
+      q,
+    });
+  };
 
   render() {
     return (
       <Widget
         style={{
           border: 'none',
-          // width: '380px',
-          height: '100vh'
+          height: '100vh',
+          minWidth: '420px',
+          minHeight: '200px'
         }}
       >
-        <WidgetContent>
-          <form>
-            <FormGroupContainer>
-              <FormGroupContainer horizontal>
-                <FormGroup>
-                  <TextField />
-                  <div style={{ width: 30 }}>
-                    <Button>翻译2</Button>
-                  </div>
-                </FormGroup>
-              </FormGroupContainer>
+        <form
+          onSubmit={this.handleClickSubmit}
+        >
+          <WidgetContent>
+            <FormGroupContainer
+              style={{ display: "flex" }}
+              horizontal
+            >
+              <div
+                style={{ flex: 1 }}
+              >
+                <TextField/>
+              </div>
+              <Button
+                style={{ flex: 'none', minWidth: 0 }}
+                type="submit"
+                primary
+              >
+                翻译
+              </Button>
             </FormGroupContainer>
-          </form>
-        </WidgetContent>
-        <WidgetContent>
-          <p>{this.state.text}</p>
-        </WidgetContent>
+          </WidgetContent>
+        </form>
       </Widget>
     );
   }

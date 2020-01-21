@@ -15,6 +15,7 @@ import { LookUpResult } from '@wordway/translate-api';
 
 import ShadowRoot from '../ShadowRoot';
 import { sharedApiClient } from '../../networking';
+import UserConfig from '../../utils/user-config';
 
 const IpaItem = (props: any) => {
   const { flag, ipa, pronunciationUrl } = props;
@@ -177,17 +178,17 @@ class InjectTransTooltipContent extends React.Component<
   }
 
   componentDidMount() {
-    const keys = ['currentUser', 'autoplayPronunciation'];
-    const callback = (result: any) => {
-      const currentUser = result.currentUser
-        ? JSON.parse(result.currentUser)
-        : null;
+    const callback = (userConfig: any) => {
+      const {
+        currentUser,
+        autoplayPronunciation,
+      } = userConfig;
+
       this.setState({ currentUser }, () => {
         if (currentUser && this.props.lookUpResult)
           this.reloadData();
       });
 
-      const autoplayPronunciation = result.autoplayPronunciation || 'disabled';
       if (autoplayPronunciation !== 'disabled') {
         let pronunciationUrl = this.props.lookUpResult?.usPronunciationUrl;
         if (autoplayPronunciation.startsWith('uk')) {
@@ -199,9 +200,8 @@ class InjectTransTooltipContent extends React.Component<
           arguments: { url: pronunciationUrl }
         });
       }
-
     };
-    chrome.storage.sync.get(keys, callback);
+    UserConfig.load(callback);
   }
 
   reloadData = async () => {
@@ -238,7 +238,7 @@ class InjectTransTooltipContent extends React.Component<
       );
       wordbookWord = r.data.data;
     } catch (e) {
-      console.log(e);
+      // ignore this error.
     } finally {
       this.setState({
         wordbookWord,
@@ -258,7 +258,7 @@ class InjectTransTooltipContent extends React.Component<
         `/wordbooks/newwords-for-user-${currentUser?.id}/words/${lookUpResult?.word}`
       );
     } catch (e) {
-      console.log(e);
+      // ignore this error.
     } finally {
       this.setState({
         wordbookWord: undefined,

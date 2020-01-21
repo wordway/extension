@@ -9,6 +9,7 @@ import YoudaoWebEngine from '@wordway/translate-webengine-youdao';
 
 import ShadowRoot from '../ShadowRoot';
 import r from '../../utils/r';
+import UserConfig from '../../utils/user-config';
 
 interface InjectTransTooltipIconProps {
   q: string;
@@ -16,7 +17,7 @@ interface InjectTransTooltipIconProps {
   onLoadComplete: any;
 }
 interface InjectTransTooltipIconState {
-  selectionTranslateEngine?: string;
+  userConfig: UserConfig;
   loading: boolean;
 }
 
@@ -43,7 +44,7 @@ class InjectTransTooltipIcon extends React.Component<
     ]);
 
     this.state = {
-      selectionTranslateEngine: 'youdao-web',
+      userConfig: new UserConfig(),
       loading: false
     };
   }
@@ -51,18 +52,17 @@ class InjectTransTooltipIcon extends React.Component<
   componentDidMount() {
     const { autoload } = this.props;
 
-    const keys = ['selectionTranslateEngine'];
-    const callback = (result: any) => {
-      this.setState({ ...result }, () => {
+    const callback = (userConfig: any) => {
+      this.setState({ userConfig }, () => {
         if (autoload) this.reloadData();
       });
     };
-    chrome.storage.sync.get(keys, callback);
+    UserConfig.load(callback);
   }
 
   reloadData = async () => {
     const { q, onLoadComplete } = this.props;
-    const { selectionTranslateEngine } = this.state;
+    const { userConfig } = this.state;
 
     let beginTime = new Date().getTime();
 
@@ -72,7 +72,7 @@ class InjectTransTooltipIcon extends React.Component<
     try {
       this.setState({ loading: true });
       lookUpResult = await this.translate
-        .engine(selectionTranslateEngine)
+        .engine(userConfig.selectionTranslateEngine)
         .lookUp(q, { exclude: ['originData'] });
     } catch (e) {
       lookUpError = e;
