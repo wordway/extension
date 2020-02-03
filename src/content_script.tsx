@@ -59,9 +59,7 @@ const onMessage = (e: any) => {
   chrome.runtime.sendMessage(payload);
 };
 
-const onMouseUp = (e: any) => {}
-
-const onMouseDown = (e: any) => {
+const onMouseUp = (e: any) => {
   const path = e.path || (e.composedPath && e.composedPath());
   if (path.length > 0) {
     const firstTagName = path[0].tagName;
@@ -80,6 +78,8 @@ const onMouseDown = (e: any) => {
   };
   UserConfig.load(callback)
 };
+
+const onMouseDown = (e: any) => {};
 
 const onKeyDown = (e: KeyboardEvent) => {
   if (!e.shiftKey) return;
