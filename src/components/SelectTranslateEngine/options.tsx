@@ -9,8 +9,8 @@ export default [
     value: 'bing-web',
     label: <span>必应词典</span>
   },
-  // {
-  //   value: 'cloudoptai',
-  //   label: <span>Cloudopt AI (Experimental)</span>
-  // }
+  {
+    value: 'cloudoptai',
+    label: <span>Cloudopt AI (Experimental)</span>
+  }
 ];

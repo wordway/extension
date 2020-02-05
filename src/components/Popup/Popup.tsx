@@ -1,5 +1,3 @@
-import '../../utils/isomorphic-translate-api';
-
 import * as React from 'react';
 import {
   Button,

@@ -1,11 +1,9 @@
-import '../../utils/isomorphic-translate-api';
-
 import * as React from 'react';
 import { Button } from '@duik/it';
-import Translate, { LookUpResult } from '@wordway/translate-api';
-import CloudoptAIEngine from '@wordway/translate-engine-cloudoptai'
-import BingWebEngine from '@wordway/translate-webengine-bing';
-import YoudaoWebEngine from '@wordway/translate-webengine-youdao';
+import {
+  LookUpResult,
+} from '@wordway/translate-api';
+import { sharedTranslate } from '../../networking';
 
 import ShadowRoot from '../ShadowRoot';
 import r from '../../utils/r';
@@ -25,23 +23,11 @@ class InjectTransTooltipIcon extends React.Component<
   InjectTransTooltipIconProps,
   InjectTransTooltipIconState
 > {
-  private translate: Translate;
-
   constructor(
     props: InjectTransTooltipIconProps,
     state: InjectTransTooltipIconState
   ) {
     super(props, state);
-
-    const cloudoptAIEngine = new CloudoptAIEngine();
-    const bingWebEngine = new BingWebEngine();
-    const youdaoWebEngine = new YoudaoWebEngine();
-
-    this.translate = new Translate([
-      cloudoptAIEngine,
-      bingWebEngine,
-      youdaoWebEngine,
-    ]);
 
     this.state = {
       userConfig: new UserConfig(),
@@ -71,8 +57,8 @@ class InjectTransTooltipIcon extends React.Component<
 
     try {
       this.setState({ loading: true });
-      lookUpResult = await this.translate
-        .engine(userConfig.selectionTranslateEngine)
+      lookUpResult = await sharedTranslate
+        .engine(userConfig.translateEngine)
         .lookUp(q, { exclude: ['originData'] });
     } catch (e) {
       lookUpError = e;

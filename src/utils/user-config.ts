@@ -2,7 +2,8 @@ class UserConfig {
   public accessToken: any;
   public currentUser: any;
   public selectionTranslateMode: string = "enable-translate-tooltip";
-  public selectionTranslateEngine: string = "youdao-web";
+  public translateEngine: string = "youdao-web";
+  public translateScopes: Array<string> = ['word'];
   public autoplayPronunciation: string = "us-pronunciation";
 
   public static load(callback: any) {
@@ -10,7 +11,8 @@ class UserConfig {
       "accessToken",
       "currentUser",
       "selectionTranslateMode",
-      "selectionTranslateEngine",
+      "translateEngine",
+      "translateScopes",
       "autoplayPronunciation",
     ];
     chrome.storage.sync.get(keys, (result: any) => {

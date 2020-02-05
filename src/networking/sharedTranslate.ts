@@ -1,7 +1,12 @@
 import { Method } from 'axios';
-import { TranslateOverrides } from '@wordway/translate-api';
+import Translate, {
+  TranslateOverrides,
+} from '@wordway/translate-api';
+import CloudoptAIEngine from '@wordway/translate-engine-cloudoptai'
+import BingWebEngine from '@wordway/translate-webengine-bing';
+import YoudaoWebEngine from '@wordway/translate-webengine-youdao';
 
-import { sharedApiClient } from '../networking';
+import { sharedApiClient } from '.';
 
 TranslateOverrides.fetch = (
   input: RequestInfo,
@@ -34,3 +39,15 @@ TranslateOverrides.fetch = (
       .catch(failureCallback);
   });
 };
+
+const cloudoptAIEngine = new CloudoptAIEngine();
+const bingWebEngine = new BingWebEngine();
+const youdaoWebEngine = new YoudaoWebEngine();
+
+const sharedTranslate = new Translate([
+  cloudoptAIEngine,
+  bingWebEngine,
+  youdaoWebEngine,
+]);
+
+export default sharedTranslate;
