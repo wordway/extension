@@ -2,6 +2,7 @@ import * as React from "react";
 import { Helmet } from "react-helmet";
 import {
   Button,
+  Checkbox,
   FormGroupContainer,
   FormGroup,
   Divider,
@@ -18,6 +19,7 @@ import toastr from "toastr";
 import {
   SelectTranslateEngine,
 } from "../../components";
+import { sharedTranslate } from '../../networking';
 import env from "../../utils/env";
 import UserConfig from "../../utils/user-config";
 
@@ -28,7 +30,8 @@ interface OptionsState {
   userConfig: UserConfig;
   currentUser?: any;
   selectionTranslateMode?: string;
-  selectionTranslateEngine?: string;
+  selectionTranslateScopes?: Array<string>;
+  translateEngine?: string;
   autoplayPronunciation?: string;
 }
 
@@ -73,11 +76,34 @@ class Options extends React.Component<OptionsProps, OptionsState> {
 
   handleChangeSelectionTranslateMode = (event: any) => {
     const { value } = event.currentTarget;
+
     this.setState({ selectionTranslateMode: value });
   }
 
-  handleOptionClickSelectionTranslateEngine = ({ value }: any) => {
-    this.setState({ selectionTranslateEngine: value });
+  handleOptionClickTranslateEngine = ({ value }: any) => {
+    const selectionTranslateScopes = sharedTranslate.engine(value).scopes;
+    this.setState({
+      selectionTranslateScopes,
+      translateEngine: value,
+    });
+  }
+
+  handleChangeTranslateScope = (event: any) => {
+    const { selectionTranslateScopes } = this.state;
+    const { name } = event.currentTarget;
+
+    let nextSelectionTranslateScopes = selectionTranslateScopes;
+
+    let scope = name.replace('scope_', '');
+    if (nextSelectionTranslateScopes?.includes(scope)) {
+      nextSelectionTranslateScopes = nextSelectionTranslateScopes.filter((v) => v !== scope);
+    } else {
+      nextSelectionTranslateScopes = [...nextSelectionTranslateScopes ?? [], scope];
+    }
+
+    this.setState({
+      selectionTranslateScopes: nextSelectionTranslateScopes,
+    })
   }
 
   handleChangeAutoplayPronunciation = (event: any) => {
@@ -113,14 +139,16 @@ class Options extends React.Component<OptionsProps, OptionsState> {
     const {
       userConfig,
       selectionTranslateMode,
-      selectionTranslateEngine,
+      selectionTranslateScopes,
+      translateEngine,
       autoplayPronunciation,
     } = this.state;
 
     UserConfig.save(
       Object.assign(userConfig, {
         selectionTranslateMode,
-        selectionTranslateEngine,
+        selectionTranslateScopes,
+        translateEngine,
         autoplayPronunciation,
       }),
       (newUserConfig: UserConfig) => {
@@ -157,9 +185,11 @@ class Options extends React.Component<OptionsProps, OptionsState> {
     const {
       currentUser,
       selectionTranslateMode,
-      selectionTranslateEngine,
+      selectionTranslateScopes,
+      translateEngine,
       autoplayPronunciation,
     } = this.state;
+
     return (
       <>
         <Helmet>
@@ -253,6 +283,38 @@ class Options extends React.Component<OptionsProps, OptionsState> {
                     </FormGroup>
                     <FormGroup>
                       <span className="content-title">
+                        取词作用域
+                      </span>
+                      <FormGroupContainer
+                        horizontal
+                        style={{
+                          marginTop: "auto"
+                        }}
+                      >
+                        <Checkbox
+                          checked={selectionTranslateScopes?.includes('word')}
+                          label="单词"
+                          name="scope_word"
+                          onChange={this.handleChangeTranslateScope}
+                        />
+                        <Checkbox
+                          checked={selectionTranslateScopes?.includes('phrase')}
+                          disabled={!sharedTranslate.engine(translateEngine).scopes?.includes('phrase')}
+                          label="词组"
+                          name="scope_phrase"
+                          onChange={this.handleChangeTranslateScope}
+                        />
+                        <Checkbox
+                          checked={selectionTranslateScopes?.includes('sentence')}
+                          disabled={!sharedTranslate.engine(translateEngine).scopes?.includes('sentence')}
+                          label="短句"
+                          name="scope_sentence"
+                          onChange={this.handleChangeTranslateScope}
+                        />
+                      </FormGroupContainer>
+                    </FormGroup>
+                    <FormGroup>
+                      <span className="content-title">
                         自动发音
                       </span>
                       <FormGroupContainer
@@ -288,8 +350,8 @@ class Options extends React.Component<OptionsProps, OptionsState> {
                       <SelectTranslateEngine
                         block
                         label="翻译引擎"
-                        activeOption={selectionTranslateEngine}
-                        onOptionClick={this.handleOptionClickSelectionTranslateEngine}
+                        activeOption={translateEngine}
+                        onOptionClick={this.handleOptionClickTranslateEngine}
                       />
                     </FormGroup>
                   </FormGroupContainer>
