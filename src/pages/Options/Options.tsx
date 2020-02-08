@@ -1,5 +1,5 @@
-import * as React from "react";
-import { Helmet } from "react-helmet";
+import * as React from 'react';
+import { Helmet } from 'react-helmet';
 import {
   Button,
   Checkbox,
@@ -13,19 +13,17 @@ import {
   Dropdown,
   DropdownItem,
   DropdownMenuPosition
-} from "@duik/it";
-import toastr from "toastr";
+} from '@duik/it';
+import toastr from 'toastr';
 
-import {
-  SelectTranslateEngine,
-} from "../../components";
+import { SelectTranslateEngine } from '../../components';
 import { sharedTranslate } from '../../networking';
-import env from "../../utils/env";
-import UserConfig from "../../utils/user-config";
+import env from '../../utils/env';
+import UserConfig from '../../utils/user-config';
 
 // import cls from "./Options.module.scss";
 
-interface OptionsProps { }
+interface OptionsProps {}
 interface OptionsState {
   userConfig: UserConfig;
   currentUser?: any;
@@ -40,7 +38,7 @@ class Options extends React.Component<OptionsProps, OptionsState> {
     super(props, state);
 
     this.state = {
-      userConfig: new UserConfig(),
+      userConfig: new UserConfig()
     };
   }
 
@@ -48,15 +46,15 @@ class Options extends React.Component<OptionsProps, OptionsState> {
     this.reloadConfig();
     chrome.storage.onChanged.addListener((changes, _) => {
       for (const key in changes) {
-        if (key === "currentUser") {
+        if (key === 'currentUser') {
           const { currentUser } = this.state;
           const { newValue } = changes[key];
 
           if (!currentUser && newValue) {
-            toastr.success("登录成功。");
+            toastr.success('登录成功。');
           }
           if (currentUser && !newValue) {
-            toastr.success("退出成功。");
+            toastr.success('退出成功。');
           }
 
           this.reloadConfig();
@@ -69,24 +67,24 @@ class Options extends React.Component<OptionsProps, OptionsState> {
     UserConfig.load((newUserConfig: any) => {
       this.setState({
         userConfig: newUserConfig,
-        ...newUserConfig,
+        ...newUserConfig
       });
-    })
-  }
+    });
+  };
 
   handleChangeSelectionTranslateMode = (event: any) => {
     const { value } = event.currentTarget;
 
     this.setState({ selectionTranslateMode: value });
-  }
+  };
 
   handleOptionClickTranslateEngine = ({ value }: any) => {
     const selectionTranslateScopes = sharedTranslate.engine(value).scopes;
     this.setState({
       selectionTranslateScopes,
-      translateEngine: value,
+      translateEngine: value
     });
-  }
+  };
 
   handleChangeTranslateScope = (event: any) => {
     const { selectionTranslateScopes } = this.state;
@@ -96,42 +94,47 @@ class Options extends React.Component<OptionsProps, OptionsState> {
 
     let scope = name.replace('scope_', '');
     if (nextSelectionTranslateScopes?.includes(scope)) {
-      nextSelectionTranslateScopes = nextSelectionTranslateScopes.filter((v) => v !== scope);
+      nextSelectionTranslateScopes = nextSelectionTranslateScopes.filter(
+        v => v !== scope
+      );
     } else {
-      nextSelectionTranslateScopes = [...nextSelectionTranslateScopes ?? [], scope];
+      nextSelectionTranslateScopes = [
+        ...(nextSelectionTranslateScopes ?? []),
+        scope
+      ];
     }
 
     this.setState({
-      selectionTranslateScopes: nextSelectionTranslateScopes,
-    })
-  }
+      selectionTranslateScopes: nextSelectionTranslateScopes
+    });
+  };
 
   handleChangeAutoplayPronunciation = (event: any) => {
     const { value } = event.currentTarget;
     this.setState({ autoplayPronunciation: value });
-  }
+  };
 
   handleClickLogin = () => {
     const urlSearchParams = new URLSearchParams(
       Object.entries({
-        extensionId: chrome.i18n.getMessage("@@extension_id")
+        extensionId: chrome.i18n.getMessage('@@extension_id')
       })
     );
     chrome.tabs.create({
       url: `${env.webURL}/account/login?${urlSearchParams}`
     });
-  }
+  };
 
   handleClickLogout = () => {
     const urlSearchParams = new URLSearchParams(
       Object.entries({
-        extensionId: chrome.i18n.getMessage("@@extension_id")
+        extensionId: chrome.i18n.getMessage('@@extension_id')
       })
     );
     chrome.tabs.create({
       url: `${env.webURL}/account/logout?${urlSearchParams}`
     });
-  }
+  };
 
   handleClickSubmit = (event: any) => {
     event.preventDefault();
@@ -141,7 +144,7 @@ class Options extends React.Component<OptionsProps, OptionsState> {
       selectionTranslateMode,
       selectionTranslateScopes,
       translateEngine,
-      autoplayPronunciation,
+      autoplayPronunciation
     } = this.state;
 
     UserConfig.save(
@@ -149,36 +152,38 @@ class Options extends React.Component<OptionsProps, OptionsState> {
         selectionTranslateMode,
         selectionTranslateScopes,
         translateEngine,
-        autoplayPronunciation,
+        autoplayPronunciation
       }),
       (newUserConfig: UserConfig) => {
         this.setState({
           userConfig: newUserConfig,
-          ...newUserConfig,
+          ...newUserConfig
         });
 
-        toastr.success("选项已保存。");
-      });
+        toastr.success('选项已保存。');
+      }
+    );
   };
 
   handleClickReset = (event: any) => {
     event.preventDefault();
 
-    const {
-      userConfig,
-    } = this.state;
+    const { userConfig } = this.state;
 
-    UserConfig.save(Object.assign(new UserConfig(), {
-      accessToken: userConfig.accessToken,
-      currentUser: userConfig.currentUser,
-    }), (newUserConfig: UserConfig) => {
-      this.setState({
-        userConfig: newUserConfig,
-        ...newUserConfig,
-      });
+    UserConfig.save(
+      Object.assign(new UserConfig(), {
+        accessToken: userConfig.accessToken,
+        currentUser: userConfig.currentUser
+      }),
+      (newUserConfig: UserConfig) => {
+        this.setState({
+          userConfig: newUserConfig,
+          ...newUserConfig
+        });
 
-      toastr.success("选项已重置。");
-    });
+        toastr.success('选项已重置。');
+      }
+    );
   };
 
   render() {
@@ -187,7 +192,7 @@ class Options extends React.Component<OptionsProps, OptionsState> {
       selectionTranslateMode,
       selectionTranslateScopes,
       translateEngine,
-      autoplayPronunciation,
+      autoplayPronunciation
     } = this.state;
 
     return (
@@ -197,37 +202,31 @@ class Options extends React.Component<OptionsProps, OptionsState> {
         </Helmet>
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
         >
-          <WidgetContainer style={{ width: "768px" }}>
+          <WidgetContainer style={{ width: '768px' }}>
             <Widget>
               <WidgetContent>
                 <FormGroupContainer horizontal>
                   <h3>扩展选项</h3>
                   <div
                     style={{
-                      display: "flex",
-                      justifyContent: "flex-end"
+                      display: 'flex',
+                      justifyContent: 'flex-end'
                     }}
                   >
                     {currentUser ? null : (
-                      <Button
-                        onClick={this.handleClickLogin}
-                      >
-                        立即登录
-                      </Button>
+                      <Button onClick={this.handleClickLogin}>立即登录</Button>
                     )}
                     {!currentUser ? null : (
                       <Dropdown
-                        menuPosition={DropdownMenuPosition["bottom-right"]}
+                        menuPosition={DropdownMenuPosition['bottom-right']}
                         buttonText={`${currentUser?.name}（${currentUser?.email}）`}
                       >
-                        <DropdownItem
-                          onClick={this.handleClickLogout}
-                        >
+                        <DropdownItem onClick={this.handleClickLogout}>
                           退出登录
                         </DropdownItem>
                       </Dropdown>
@@ -245,8 +244,8 @@ class Options extends React.Component<OptionsProps, OptionsState> {
                     <h5>划词翻译</h5>
                     <FormGroup
                       style={{
-                        display: "flex",
-                        flexDirection: "column"
+                        display: 'flex',
+                        flexDirection: 'column'
                       }}
                     >
                       <span className="content-title">
@@ -254,7 +253,7 @@ class Options extends React.Component<OptionsProps, OptionsState> {
                       </span>
                       <Radio
                         checked={
-                          selectionTranslateMode === "enable-translate-icon"
+                          selectionTranslateMode === 'enable-translate-icon'
                         }
                         label="显示图标"
                         name="selectionTranslateMode"
@@ -264,7 +263,7 @@ class Options extends React.Component<OptionsProps, OptionsState> {
                       />
                       <Radio
                         checked={
-                          selectionTranslateMode === "enable-translate-tooltip"
+                          selectionTranslateMode === 'enable-translate-tooltip'
                         }
                         label="显示弹出式翻译"
                         name="selectionTranslateMode"
@@ -273,7 +272,7 @@ class Options extends React.Component<OptionsProps, OptionsState> {
                         onChange={this.handleChangeSelectionTranslateMode}
                       />
                       <Radio
-                        checked={selectionTranslateMode === "disabled"}
+                        checked={selectionTranslateMode === 'disabled'}
                         label="不显示图标和弹出式翻译"
                         description="此时您可以按下快捷键「Shift」来调出弹出式翻译。"
                         name="selectionTranslateMode"
@@ -282,31 +281,40 @@ class Options extends React.Component<OptionsProps, OptionsState> {
                       />
                     </FormGroup>
                     <FormGroup>
-                      <span className="content-title">
-                        取词作用域
-                      </span>
+                      <span className="content-title">取词作用域</span>
                       <FormGroupContainer
                         horizontal
                         style={{
-                          marginTop: "auto"
+                          marginTop: 'auto'
                         }}
                       >
                         <Checkbox
                           checked={selectionTranslateScopes?.includes('word')}
+                          disabled
                           label="单词"
                           name="scope_word"
                           onChange={this.handleChangeTranslateScope}
                         />
                         <Checkbox
                           checked={selectionTranslateScopes?.includes('phrase')}
-                          disabled={!sharedTranslate.engine(translateEngine).scopes?.includes('phrase')}
+                          disabled={
+                            !sharedTranslate
+                              .engine(translateEngine)
+                              .scopes?.includes('phrase')
+                          }
                           label="词组"
                           name="scope_phrase"
                           onChange={this.handleChangeTranslateScope}
                         />
                         <Checkbox
-                          checked={selectionTranslateScopes?.includes('sentence')}
-                          disabled={!sharedTranslate.engine(translateEngine).scopes?.includes('sentence')}
+                          checked={selectionTranslateScopes?.includes(
+                            'sentence'
+                          )}
+                          disabled={
+                            !sharedTranslate
+                              .engine(translateEngine)
+                              .scopes?.includes('sentence')
+                          }
                           label="短句"
                           name="scope_sentence"
                           onChange={this.handleChangeTranslateScope}
@@ -314,31 +322,29 @@ class Options extends React.Component<OptionsProps, OptionsState> {
                       </FormGroupContainer>
                     </FormGroup>
                     <FormGroup>
-                      <span className="content-title">
-                        自动发音
-                      </span>
+                      <span className="content-title">自动发音</span>
                       <FormGroupContainer
                         horizontal
                         style={{
-                          marginTop: "auto"
+                          marginTop: 'auto'
                         }}
                       >
                         <Radio
-                          checked={autoplayPronunciation === "disabled"}
+                          checked={autoplayPronunciation === 'disabled'}
                           label="禁用该功能"
                           name="autoplayPronunciation"
                           value="disabled"
                           onChange={this.handleChangeAutoplayPronunciation}
                         />
                         <Radio
-                          checked={autoplayPronunciation === "us-pronunciation"}
+                          checked={autoplayPronunciation === 'us-pronunciation'}
                           label="美式发音"
                           name="autoplayPronunciation"
                           value="us-pronunciation"
                           onChange={this.handleChangeAutoplayPronunciation}
                         />
                         <Radio
-                          checked={autoplayPronunciation === "uk-pronunciation"}
+                          checked={autoplayPronunciation === 'uk-pronunciation'}
                           label="英式发音"
                           name="autoplayPronunciation"
                           value="uk-pronunciation"
@@ -356,7 +362,7 @@ class Options extends React.Component<OptionsProps, OptionsState> {
                     </FormGroup>
                   </FormGroupContainer>
                 </WidgetContent>
-                <WidgetContent style={{ display: "flex" }}>
+                <WidgetContent style={{ display: 'flex' }}>
                   <FormGroupContainer horizontal>
                     <Button type="submit" success>
                       保存
