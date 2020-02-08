@@ -6,7 +6,7 @@ import UserConfig from './utils/user-config';
 
 const ELEMENT_ID = '___wordway';
 
-const injectTransTooltip = ({ autoload = false }: any) => {
+const injectTransTooltip = ({ autoload = false, scopes = [] }: any) => {
   const selection: any = document.getSelection();
 
   if (selection.rangeCount === 0) return;
@@ -20,7 +20,24 @@ const injectTransTooltip = ({ autoload = false }: any) => {
 
   let el = document.getElementById(ELEMENT_ID);
 
-  if (q.length === 0) {
+  // 未选中文字或超过200个字符
+  if (q.length === 0 || q.length > 200) {
+    if (el) el.remove();
+    return;
+  }
+
+  // 过滤非英文字符
+  const englishRegex = /^[a-zA-Z0-9 .?!,:…;-–—()[\]{}"'/]+$/;
+  const spaceCount = (q.match(/\s/g) ?? []).length;
+
+  if (
+    !englishRegex.test(q) ||
+    !(
+      ((scopes || []).includes('word') && spaceCount === 0) ||  // 单词
+      ((scopes || []).includes('phrase') && spaceCount <= 2) || // 词组
+      ((scopes || []).includes('sentence') && spaceCount > 2)   // 短句
+    )
+  ) {
     if (el) el.remove();
     return;
   }
@@ -50,7 +67,7 @@ const injectTransTooltip = ({ autoload = false }: any) => {
     />,
     el
   );
-}
+};
 
 const onMessage = (e: any) => {
   const { source = '', payload } = e.data || {};
@@ -69,14 +86,16 @@ const onMouseUp = (e: any) => {
 
   const callback = (userConfig: UserConfig) => {
     const selectionTranslateMode = userConfig.selectionTranslateMode;
+    const selectionTranslateScopes = userConfig.selectionTranslateScopes;
 
     if (selectionTranslateMode === 'disabled') return;
 
     injectTransTooltip({
-      autoload: selectionTranslateMode === "enable-translate-tooltip"
+      autoload: selectionTranslateMode === 'enable-translate-tooltip',
+      scopes: selectionTranslateScopes
     });
   };
-  UserConfig.load(callback)
+  UserConfig.load(callback);
 };
 
 const onMouseDown = (e: any) => {};
@@ -84,7 +103,15 @@ const onMouseDown = (e: any) => {};
 const onKeyDown = (e: KeyboardEvent) => {
   if (!e.shiftKey) return;
 
-  injectTransTooltip({ autoload: true });
+  const callback = (userConfig: UserConfig) => {
+    const selectionTranslateScopes = userConfig.selectionTranslateScopes;
+
+    injectTransTooltip({
+      autoload: true,
+      scopes: selectionTranslateScopes
+    });
+  };
+  UserConfig.load(callback);
 };
 
 window.addEventListener('message', onMessage);
