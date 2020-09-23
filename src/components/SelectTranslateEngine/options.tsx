@@ -2,15 +2,15 @@ import React from 'react';
 
 export default [
   {
-    value: 'youdao-web',
+    key: 'youdao-web',
     label: <span>有道词典</span>
   },
   {
-    value: 'bing-web',
+    key: 'bing-web',
     label: <span>必应词典</span>
   },
   {
-    value: 'cloudoptai',
+    key: 'cloudoptai',
     label: <span>Cloudopt AI (Experimental)</span>
   }
 ];

@@ -1,11 +1,6 @@
 // 请按名称排序放置
-import ApiClient from './ApiClient';
-import sharedTranslate from './sharedTranslate';
+import { sharedDb } from './db';
+import { sharedHttpClient } from './httpClient';
+import { sharedTranslateClient } from './translateClient';
 
-const sharedApiClient = new ApiClient();
-
-export {
-  ApiClient,
-  sharedApiClient,
-  sharedTranslate,
-};
+export { sharedDb, sharedHttpClient, sharedTranslateClient };

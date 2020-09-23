@@ -2,7 +2,7 @@ import * as React from 'react';
 import root from 'react-shadow';
 
 // eslint-disable-next-line
-import duikItStyles from '!!raw-loader!./duik_it.txt';
+import antdCssStyles from '!!raw-loader!./antd_css.txt';
 
 interface ShadowRootProps {
   children: any;
@@ -24,7 +24,7 @@ class ShadowRoot extends React.Component<ShadowRootProps, ShadowRootState> {
               }}
             >
               <head>
-                <style>{duikItStyles}</style>
+                <style>{antdCssStyles}</style>
               </head>
               <body>{children}</body>
             </html>

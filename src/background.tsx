@@ -1,8 +1,8 @@
 // import * as React from "react";
 // import * as ReactDOM from "react-dom";
 
-import { sharedApiClient } from './networking';
-import UserConfig from './utils/user-config';
+import { sharedHttpClient } from './networking';
+import { sharedConfigManager } from './utils/config';
 
 // Listen to messages sent from other parts of the extension.
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -13,7 +13,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const successCallback = (response: any) => sendResponse({ response });
     const failureCallback = (error: any) => sendResponse({ error });
 
-    sharedApiClient
+    sharedHttpClient
       .request(request.arguments, false)
       .then(successCallback)
       .catch(failureCallback);
@@ -36,15 +36,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   };
 
   const _handleMessageAccountLogin = () => {
-    UserConfig.save(request.arguments, () => {});
+    const { currentUser } = request.arguments;
+    sharedConfigManager.setCurrentUser(currentUser);
     return true;
   };
 
   const _handleMessageAccountLogout = () => {
-    UserConfig.save({
-      accessToken: null,
-      currentUser: null,
-    }, () => {});
+    sharedConfigManager.setCurrentUser(null);
     return true;
   };
 

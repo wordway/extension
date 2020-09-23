@@ -3,10 +3,14 @@ import axios, {
   AxiosInstance,
   AxiosPromise,
   AxiosRequestConfig,
-  AxiosResponse
+  AxiosResponse,
 } from 'axios';
-import env from '../utils/env';
-import UserConfig from '../utils/user-config';
+import env from '../../utils/env';
+import {
+  sharedConfigManager,
+  ConfigListener,
+  Config,
+} from '../../utils/config';
 
 function normalize(caseType: string, object: any): any {
   if (!object) {
@@ -29,14 +33,14 @@ function normalize(caseType: string, object: any): any {
   return object;
 }
 
-class ApiClient {
+class HttpClient implements ConfigListener {
   private sharedAxios: AxiosInstance;
 
-  private accessToken: string = '';
+  private accessToken: string | undefined;
 
   public constructor() {
     this.sharedAxios = axios.create({
-      baseURL: env.apiURL
+      baseURL: env.apiURL,
     });
 
     this.sharedAxios.interceptors.request.use(
@@ -46,7 +50,7 @@ class ApiClient {
 
         if (baseURL.startsWith(env.apiURL || '')) {
           nextConfig = Object.assign({}, config, {
-            data: normalize('snakecase', config.data)
+            data: normalize('snakecase', config.data),
           });
 
           if (this.accessToken) {
@@ -62,7 +66,7 @@ class ApiClient {
         let nextResponse = response;
         if (url.startsWith(env.apiURL)) {
           nextResponse = Object.assign({}, response, {
-            data: normalize('camelcase', response.data)
+            data: normalize('camelcase', response.data),
           });
         }
         return nextResponse;
@@ -80,25 +84,22 @@ class ApiClient {
       }
     );
 
-    UserConfig.load((userConfig: UserConfig) => {
-      this.accessToken = userConfig.accessToken;
-    })
-    chrome.storage.onChanged.addListener((changes, namespace) => {
-      for (const key in changes) {
-        if (key === 'accessToken') {
-          const storageChange = changes[key];
+    sharedConfigManager.addListener(this);
+    setTimeout(async () => {
+      const config = await sharedConfigManager.getConfig();
+      this.accessToken = config.currentUser?.jwtToken?.accessToken;
+    }, 0);
+  }
 
-          this.accessToken = storageChange.newValue;
-        }
-      }
-    });
+  onConfigChange(newConfig: Config) {
+    this.accessToken = newConfig.currentUser?.jwtToken?.accessToken;
   }
 
   public request<T = any, R = AxiosResponse<T>>(
     config: AxiosRequestConfig,
     runInBackground = true
   ): Promise<R> {
-    if (!runInBackground) {
+    if (!runInBackground || !chrome?.runtime?.id) {
       return this.sharedAxios.request(config);
     }
 
@@ -119,7 +120,7 @@ class ApiClient {
     return this.request({
       method: 'GET',
       url,
-      ...config
+      ...config,
     });
   }
 
@@ -127,7 +128,7 @@ class ApiClient {
     return this.request({
       method: 'DELETE',
       url,
-      ...config
+      ...config,
     });
   }
 
@@ -140,7 +141,7 @@ class ApiClient {
       method: 'POST',
       url,
       data,
-      ...config
+      ...config,
     });
   }
 
@@ -153,7 +154,7 @@ class ApiClient {
       method: 'PUT',
       url,
       data,
-      ...config
+      ...config,
     });
   }
 
@@ -166,9 +167,9 @@ class ApiClient {
       method: 'PATCH',
       url,
       data,
-      ...config
+      ...config,
     });
   }
 }
 
-export default ApiClient;
+export default HttpClient;

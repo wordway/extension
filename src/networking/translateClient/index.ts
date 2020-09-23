@@ -1,12 +1,10 @@
 import { Method } from 'axios';
-import Translate, {
-  TranslateOverrides,
-} from '@wordway/translate-api';
-import CloudoptAIEngine from '@wordway/translate-engine-cloudoptai'
+import Translate, { TranslateOverrides } from '@wordway/translate-api';
+import CloudoptAIEngine from '@wordway/translate-engine-cloudoptai';
 import BingWebEngine from '@wordway/translate-webengine-bing';
 import YoudaoWebEngine from '@wordway/translate-webengine-youdao';
 
-import { sharedApiClient } from '.';
+import { sharedHttpClient } from '../httpClient';
 
 TranslateOverrides.fetch = (
   input: RequestInfo,
@@ -20,7 +18,7 @@ TranslateOverrides.fetch = (
         status: response.status,
         statusText: response.statusText,
         json: () => response.data,
-        text: () => response.data
+        text: () => response.data,
       });
     };
     const failureCallback = (error: any) => {
@@ -30,10 +28,10 @@ TranslateOverrides.fetch = (
     const url = input.toString();
     const method: Method = (init?.method || 'GET') as Method;
 
-    sharedApiClient
+    sharedHttpClient
       .request({
         method,
-        url
+        url,
       })
       .then(successCallback)
       .catch(failureCallback);
@@ -44,10 +42,10 @@ const cloudoptAIEngine = new CloudoptAIEngine();
 const bingWebEngine = new BingWebEngine();
 const youdaoWebEngine = new YoudaoWebEngine();
 
-const sharedTranslate = new Translate([
+const sharedTranslateClient = new Translate([
   cloudoptAIEngine,
   bingWebEngine,
   youdaoWebEngine,
 ]);
 
-export default sharedTranslate;
+export { sharedTranslateClient };

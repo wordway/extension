@@ -1,21 +1,16 @@
 import * as React from 'react';
+import { Alert, Button, Divider } from 'antd';
 import {
-  Alert,
-  WidgetContainer,
-  Widget,
-  WidgetContent,
-  Divider,
-  FormGroupContainer,
-  Button,
-  ButtonGroup,
-  FormGroup
-} from '@duik/it';
-import * as FeatherIcons from 'react-feather';
+  CheckOutlined,
+  PlusOutlined,
+  SettingOutlined,
+  SoundOutlined,
+} from '@ant-design/icons';
 import { LookUpResult } from '@wordway/translate-api';
 
 import ShadowRoot from '../ShadowRoot';
-import { sharedApiClient } from '../../networking';
-import UserConfig from '../../utils/user-config';
+import { sharedHttpClient } from '../../networking';
+import { sharedConfigManager } from '../../utils/config';
 
 const IpaItem = (props: any) => {
   const { flag, ipa, pronunciationUrl } = props;
@@ -24,22 +19,22 @@ const IpaItem = (props: any) => {
   const playPronunciation = () => {
     chrome.runtime.sendMessage({
       method: 'playAudio',
-      arguments: { url: pronunciationUrl }
+      arguments: { url: pronunciationUrl },
     });
-  }
+  };
 
   return (
     <div
       style={{
         marginRight: '12px',
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
       }}
     >
       <span
         style={{
           fontSize: '14px',
-          marginRight: '6px'
+          marginRight: '6px',
         }}
       >
         {`${flag}`}
@@ -54,7 +49,7 @@ const IpaItem = (props: any) => {
           background: 'transparent',
           border: 'none',
           marginTop: '2px',
-          outline: 'none'
+          outline: 'none',
         }}
         onMouseEnter={() => {
           playPronunciation();
@@ -63,7 +58,7 @@ const IpaItem = (props: any) => {
           playPronunciation();
         }}
       >
-        <FeatherIcons.Volume2 size={20} color="var(--indigo)" />
+        <SoundOutlined />
       </button>
     </div>
   );
@@ -80,7 +75,7 @@ const DefinitionListItem = (props: any) => {
         display: 'flex',
         flexDirection: 'row',
         padding: 0,
-        margin: 0
+        margin: 0,
       }}
     >
       <span
@@ -98,7 +93,7 @@ const DefinitionListItem = (props: any) => {
           backgroundColor: 'var(--text-secondary)',
           color: '#fff',
           verticalAlign: 'middle',
-          textAlign: 'center'
+          textAlign: 'center',
         }}
       >
         {type}
@@ -110,7 +105,7 @@ const DefinitionListItem = (props: any) => {
           margin: 0,
           display: 'flex',
           flex: 1,
-          lineHeight: '20px'
+          lineHeight: '20px',
         }}
       >
         {values.join('；')}
@@ -130,7 +125,7 @@ const TenseListItem = (props: any) => {
       <span
         style={{
           margin: '0 6px 0 0',
-          fontSize: '14px'
+          fontSize: '14px',
         }}
       >
         {name}
@@ -139,7 +134,7 @@ const TenseListItem = (props: any) => {
         style={{
           margin: '0 6px 0 0',
           fontSize: '14px',
-          color: 'var(--indigo)'
+          color: 'var(--indigo)',
         }}
       >
         {values.join(', ')}
@@ -173,20 +168,16 @@ class InjectTransTooltipContent extends React.Component<
     this.state = {
       currentUser: undefined,
       processing: false,
-      wordbookWord: undefined
+      wordbookWord: undefined,
     };
   }
 
   componentDidMount() {
     const callback = (userConfig: any) => {
-      const {
-        currentUser,
-        autoplayPronunciation,
-      } = userConfig;
+      const { currentUser, autoplayPronunciation } = userConfig;
 
       this.setState({ currentUser }, () => {
-        if (currentUser && this.props.lookUpResult)
-          this.reloadData();
+        if (currentUser && this.props.lookUpResult) this.loadData();
       });
 
       if (autoplayPronunciation !== 'disabled') {
@@ -197,27 +188,38 @@ class InjectTransTooltipContent extends React.Component<
 
         chrome.runtime.sendMessage({
           method: 'playAudio',
-          arguments: { url: pronunciationUrl }
+          arguments: { url: pronunciationUrl },
         });
       }
     };
-    UserConfig.load(callback);
+
+    setTimeout(async () => {
+      const config = await sharedConfigManager.getConfig();
+      this.setState({
+        currentUser: config.currentUser,
+      });
+      // UserConfig.load(callback);
+      callback({
+        currentUser: config.currentUser,
+        autoplayPronunciation: true,
+      });
+    }, 0);
   }
 
-  reloadData = async () => {
+  loadData = async () => {
     const { lookUpResult } = this.props;
     const { currentUser } = this.state;
 
     try {
-      const r = await sharedApiClient.get(
+      const r = await sharedHttpClient.get(
         `/wordbooks/newwords-for-user-${currentUser?.id}/words/${lookUpResult?.word}`
       );
       const {
-        data: { data: wordbookWord }
+        data: { data: wordbookWord },
       } = r;
 
       this.setState({
-        wordbookWord
+        wordbookWord,
       });
     } catch (e) {
       // ignore this error.
@@ -232,7 +234,7 @@ class InjectTransTooltipContent extends React.Component<
     try {
       this.setState({ processing: true });
 
-      const r = await sharedApiClient.post(
+      const r = await sharedHttpClient.post(
         `/wordbooks/newwords-for-user-${currentUser?.id}/words`,
         { word: lookUpResult?.word }
       );
@@ -242,7 +244,7 @@ class InjectTransTooltipContent extends React.Component<
     } finally {
       this.setState({
         wordbookWord,
-        processing: false
+        processing: false,
       });
     }
   };
@@ -254,7 +256,7 @@ class InjectTransTooltipContent extends React.Component<
     try {
       this.setState({ processing: true });
 
-      await sharedApiClient.delete(
+      await sharedHttpClient.delete(
         `/wordbooks/newwords-for-user-${currentUser?.id}/words/${lookUpResult?.word}`
       );
     } catch (e) {
@@ -262,7 +264,7 @@ class InjectTransTooltipContent extends React.Component<
     } finally {
       this.setState({
         wordbookWord: undefined,
-        processing: false
+        processing: false,
       });
     }
   };
@@ -272,18 +274,18 @@ class InjectTransTooltipContent extends React.Component<
     if (!lookUpError) return <></>;
 
     return (
-      <WidgetContent>
-        <FormGroupContainer>
-          <FormGroup
+      <div>
+        <div>
+          <div
             style={{
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
             }}
           >
             <h4>{lookUpError?.message}</h4>
-          </FormGroup>
-        </FormGroupContainer>
-      </WidgetContent>
+          </div>
+        </div>
+      </div>
     );
   };
 
@@ -294,75 +296,74 @@ class InjectTransTooltipContent extends React.Component<
 
     if (!lookUpResult?.word) {
       return (
-        <WidgetContent>
-          <FormGroupContainer>
-            <FormGroup
+        <div>
+          <div>
+            <div
               style={{
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
               }}
             >
               <span className="content-title">原文</span>
               <h4>{lookUpResult?.sourceText}</h4>
-            </FormGroup>
-          </FormGroupContainer>
-          <FormGroupContainer>
-            <FormGroup
+            </div>
+          </div>
+          <div>
+            <div
               style={{
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
               }}
             >
               <span className="content-title">译文</span>
               <h4>{lookUpResult?.targetText}</h4>
-            </FormGroup>
-          </FormGroupContainer>
-        </WidgetContent>
+            </div>
+          </div>
+        </div>
       );
     }
 
     return (
       <>
-        <WidgetContent
+        <div
           style={{
-            padding: '16px 16px'
+            padding: '16px 16px',
           }}
         >
           <h3
             style={{
-              marginRight: '12px'
+              marginRight: '12px',
             }}
           >
             {lookUpResult?.word}
           </h3>
-        </WidgetContent>
+        </div>
         {!lookUpResult?.tip ? null : (
           <>
-            <Divider />
+            <Divider style={{ margin: 0 }} />
             <Alert
-              warning
+              type="warning"
               style={{
                 width: '100%',
                 padding: '6px 16px',
                 border: 'none',
-                borderRadius: 0
+                borderRadius: 0,
               }}
-            >
-              {lookUpResult?.tip}
-            </Alert>
+              message={lookUpResult?.tip}
+            />
           </>
         )}
-        <Divider />
-        <WidgetContent
+        <Divider style={{ margin: 0 }} />
+        <div
           style={{
-            padding: '16px 16px'
+            padding: '16px 16px',
           }}
         >
-          <FormGroupContainer>
+          <div>
             <div
               style={{
                 display: 'flex',
-                flexDirection: 'row'
+                flexDirection: 'row',
               }}
             >
               <IpaItem
@@ -392,8 +393,8 @@ class InjectTransTooltipContent extends React.Component<
                 ))}
               </TenseWrapper>
             )}
-          </FormGroupContainer>
-        </WidgetContent>
+          </div>
+        </div>
       </>
     );
   };
@@ -404,82 +405,69 @@ class InjectTransTooltipContent extends React.Component<
 
     return (
       <ShadowRoot>
-        <WidgetContainer
+        <div
           style={{
             padding: 0,
             minWidth: '360px',
             minHeight: '120px',
             maxWidth: '420px',
-            maxHeight: '540px'
+            maxHeight: '540px',
           }}
         >
-          <Widget
+          <div
             style={{
               border: 'none',
-              boxShadow: 'none'
+              boxShadow: 'none',
             }}
           >
             {this.renderLookUpError()}
             {this.renderLookUpResult()}
-            <Divider />
-            <WidgetContent
+            <Divider style={{ margin: 0 }} />
+            <div
               style={{
                 display: 'flex',
-                padding: '16px 16px'
+                padding: '16px 16px',
               }}
             >
               {!lookUpResult?.word ? null : (
-                <ButtonGroup sm>
-                  {/* <Button>
-                    <FeatherIcons.Bookmark size={16} color="var(--text-main)" />
-                  </Button> */}
-                  <Button
-                    loading={processing}
-                    onClick={() => {
-                      if (!currentUser) {
-                        chrome.runtime.sendMessage({
-                          method: 'openOptionsPage'
-                        });
-                        return;
-                      }
-                      if (!wordbookWord) {
-                        this.handleClickAddToNewWords();
-                      } else {
-                        this.handleClickRemoveFromNewWords();
-                      }
-                    }}
-                  >
-                    {!wordbookWord ? (
-                      <>
-                        <FeatherIcons.Plus size={16} color="var(--text-main)" />
-                        &nbsp;添加到生词本
-                      </>
-                    ) : (
-                      <>
-                        <FeatherIcons.Check
-                          size={16}
-                          color="var(--text-main)"
-                        />
-                        &nbsp;已添加到生词本
-                      </>
-                    )}
-                  </Button>
-                </ButtonGroup>
+                <Button
+                  type="ghost"
+                  size="small"
+                  loading={processing}
+                  icon={!wordbookWord ? <PlusOutlined /> : <CheckOutlined />}
+                  onClick={() => {
+                    if (!currentUser) {
+                      chrome.runtime.sendMessage({
+                        method: 'openOptionsPage',
+                      });
+                      return;
+                    }
+                    if (!wordbookWord) {
+                      this.handleClickAddToNewWords();
+                    } else {
+                      this.handleClickRemoveFromNewWords();
+                    }
+                  }}
+                >
+                  {!wordbookWord ? (
+                    <>&nbsp;添加到生词本</>
+                  ) : (
+                    <>&nbsp;已添加到生词本</>
+                  )}
+                </Button>
               )}
               <div style={{ flex: 1 }} />
               <Button
-                transparent
-                square
-                sm
+                type="ghost"
+                size="small"
+                icon={<SettingOutlined />}
                 onClick={() => {
                   chrome.runtime.sendMessage({ method: 'openOptionsPage' });
                 }}
-              >
-                <FeatherIcons.Settings size={16} color="var(--text-main)" />
-              </Button>
-            </WidgetContent>
-          </Widget>
-        </WidgetContainer>
+              />
+            </div>
+          </div>
+        </div>
       </ShadowRoot>
     );
   }

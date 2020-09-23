@@ -8,3 +8,5 @@ declare module 'react-shadow' {
   export default root;
 }
 declare module '*.txt';
+declare module 'localforage-webextensionstorage-driver/sync';
+declare module 'lowdb';

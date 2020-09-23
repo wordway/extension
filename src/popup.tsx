@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 
 import { Popup } from './components';
 
-import './styles/global.scss';
+import './styles/global.less';
 
 chrome.tabs.query({ active: true, currentWindow: true }, tab => {
   const el = document.getElementById('root');

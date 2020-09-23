@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { InjectTransTooltip } from './components';
-import UserConfig from './utils/user-config';
+import { sharedConfigManager } from './utils/config';
 
 const ELEMENT_ID = '___wordway';
 
@@ -33,9 +33,11 @@ const injectTransTooltip = ({ autoload = false, scopes = [] }: any) => {
   if (
     !englishRegex.test(q) ||
     !(
-      ((scopes || []).includes('word') && spaceCount === 0) ||  // 单词
-      ((scopes || []).includes('phrase') && spaceCount <= 2) || // 词组
-      ((scopes || []).includes('sentence') && spaceCount > 2)   // 短句
+      (
+        ((scopes || []).includes('word') && spaceCount === 0) || // 单词
+        ((scopes || []).includes('phrase') && spaceCount <= 2) || // 词组
+        ((scopes || []).includes('sentence') && spaceCount > 2)
+      ) // 短句
     )
   ) {
     if (el) el.remove();
@@ -84,18 +86,18 @@ const onMouseUp = (e: any) => {
     if (path.findIndex(({ id }: any) => id === ELEMENT_ID) >= 0) return;
   }
 
-  const callback = (userConfig: UserConfig) => {
-    const selectionTranslateMode = userConfig.selectionTranslateMode;
-    const selectionTranslateScopes = userConfig.selectionTranslateScopes;
+  sharedConfigManager.getConfig().then((config) => {
+    const selectionTranslateMode = config.selectionTranslateMode;
+    // const selectionTranslateScopes = config.selectionTranslateScopes;
+    const selectionTranslateScopes = ['word'];
 
     if (selectionTranslateMode === 'disabled') return;
 
     injectTransTooltip({
-      autoload: selectionTranslateMode === 'enable-translate-tooltip',
-      scopes: selectionTranslateScopes
+      autoload: false,
+      scopes: selectionTranslateScopes,
     });
-  };
-  UserConfig.load(callback);
+  });
 };
 
 const onMouseDown = (e: any) => {};
@@ -103,15 +105,14 @@ const onMouseDown = (e: any) => {};
 const onKeyDown = (e: KeyboardEvent) => {
   if (!e.shiftKey) return;
 
-  const callback = (userConfig: UserConfig) => {
-    const selectionTranslateScopes = userConfig.selectionTranslateScopes;
+  sharedConfigManager.getConfig().then((config) => {
+    const selectionTranslateScopes = config.selectionTranslateScopes;
 
     injectTransTooltip({
       autoload: true,
-      scopes: selectionTranslateScopes
+      scopes: selectionTranslateScopes,
     });
-  };
-  UserConfig.load(callback);
+  });
 };
 
 window.addEventListener('message', onMessage);

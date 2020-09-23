@@ -6,7 +6,7 @@ import { LookUpResult } from '@wordway/translate-api';
 import InjectTransTooltipContent from './InjectTransTooltipContent';
 import InjectTransTooltipIcon from './InjectTransTooltipIcon';
 
-import cls from './InjectTransTooltip.module.scss';
+import './InjectTransTooltip.less';
 
 class VirtualReferenceElement {
   boundingClientRect: DOMRect;
@@ -80,7 +80,7 @@ class InjectTransTooltip extends React.Component<
     if (!e.shiftKey) return;
 
     this.handleClose();
-  }
+  };
 
   onScroll = (e: any) => {
     const selection: any = document.getSelection();
@@ -88,17 +88,15 @@ class InjectTransTooltip extends React.Component<
     const boundingClientRect = selectionRange.getBoundingClientRect();
 
     this.setState({
-      virtualReferenceElement: new VirtualReferenceElement(
-        boundingClientRect
-      ),
-    })
+      virtualReferenceElement: new VirtualReferenceElement(boundingClientRect),
+    });
   };
 
   handleClose = () => {
     const { onHide } = this.props;
 
     this.setState({
-      visible: false
+      visible: false,
     });
 
     setTimeout(() => onHide(), 200);
@@ -112,7 +110,7 @@ class InjectTransTooltip extends React.Component<
         this.setState({
           switching: false,
           lookUpResult,
-          lookUpError
+          lookUpError,
         });
       }, 1);
     };
@@ -134,7 +132,7 @@ class InjectTransTooltip extends React.Component<
           lookUpResult={this.state.lookUpResult}
           lookUpError={this.state.lookUpError}
         />
-        <button onClick={this.handleClose} className={cls['btn-close']}>
+        <button onClick={this.handleClose} className={'btn-close'}>
           <span />
         </button>
       </>
@@ -152,39 +150,33 @@ class InjectTransTooltip extends React.Component<
       popperBody = this.renderTransTooltipContent();
       popperClassNames = (placement: any): any => {
         return {
-          [cls['popper-fade-in-up']]:
-            (placement || 'bottom').startsWith('top') &&
-            this.state.visible,
-          [cls['popper-fade-in-down']]:
-            (placement || 'bottom').startsWith('bottom') &&
-            this.state.visible,
-          [cls['popper-fade-out-up']]:
-            (placement || 'bottom').startsWith('top') &&
-            !this.state.visible,
-          [cls['popper-fade-out-down']]:
-            (placement || 'bottom').startsWith('bottom') &&
-            !this.state.visible
-        }
-      }
+          'popper-fade-in-up':
+            (placement || 'bottom').startsWith('top') && this.state.visible,
+          'popper-fade-in-down':
+            (placement || 'bottom').startsWith('bottom') && this.state.visible,
+          'popper-fade-out-up':
+            (placement || 'bottom').startsWith('top') && !this.state.visible,
+          'popper-fade-out-down':
+            (placement || 'bottom').startsWith('bottom') && !this.state.visible,
+        };
+      };
     }
 
     return (
-      <Popper
-        referenceElement={this.state.virtualReferenceElement}
-      >
+      <Popper referenceElement={this.state.virtualReferenceElement}>
         {({ ref, style, placement, arrowProps }) => (
-          <div ref={ref} className={cls['trans-tooltip']} style={style}>
+          <div ref={ref} className={'trans-tooltip'} style={style}>
             <div
-              className={classNames(cls['popper'], {
+              className={classNames('popper', {
                 ...popperClassNames(placement),
               })}
             >
-              <div className={cls['popper-body']}>{popperBody}</div>
+              <div className={'popper-body'}>{popperBody}</div>
               {!(lookUpResult || lookUpError) ? null : (
                 <div
                   ref={arrowProps.ref}
                   data-placement={placement}
-                  className={cls['popper-arrow']}
+                  className={'popper-arrow'}
                   style={arrowProps.style}
                 />
               )}

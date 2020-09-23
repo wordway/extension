@@ -1,20 +1,17 @@
 import React from 'react';
-import { Select } from '@duik/it';
+import { Select } from 'antd';
 
 import options from './options';
 
-const SelectTranslateEngine = ({ activeOption, ...rest }: any) => {
-  const activeOptionIndex = options.findIndex(v => v.value === activeOption);
-  const nextActiveOption =
-    activeOptionIndex >= 0 ? options[activeOptionIndex] : options[0];
+const SelectTranslateEngine = ({ value, ...rest }: any) => {
   return (
-    <Select
-      activeOption={nextActiveOption}
-      options={options}
-      placeholder="Action"
-      position="bottomRight"
-      {...rest}
-    />
+    <Select value={value} {...rest}>
+      {options.map((e) => (
+        <Select.Option key={e.key} value={e.key}>
+          {e.label}
+        </Select.Option>
+      ))}
+    </Select>
   );
 };
 

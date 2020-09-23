@@ -1,13 +1,11 @@
 import * as React from 'react';
-import { Button } from '@duik/it';
-import {
-  LookUpResult,
-} from '@wordway/translate-api';
-import { sharedTranslate } from '../../networking';
+import { Button } from 'antd';
+import { LookUpResult } from '@wordway/translate-api';
+import { sharedTranslateClient } from '../../networking';
 
 import ShadowRoot from '../ShadowRoot';
 import r from '../../utils/r';
-import UserConfig from '../../utils/user-config';
+import { sharedConfigManager } from '../../utils/config';
 
 interface InjectTransTooltipIconProps {
   q: string;
@@ -15,7 +13,6 @@ interface InjectTransTooltipIconProps {
   onLoadComplete: any;
 }
 interface InjectTransTooltipIconState {
-  userConfig: UserConfig;
   loading: boolean;
 }
 
@@ -30,25 +27,20 @@ class InjectTransTooltipIcon extends React.Component<
     super(props, state);
 
     this.state = {
-      userConfig: new UserConfig(),
-      loading: false
+      loading: false,
     };
   }
 
   componentDidMount() {
     const { autoload } = this.props;
 
-    const callback = (userConfig: any) => {
-      this.setState({ userConfig }, () => {
-        if (autoload) this.reloadData();
-      });
-    };
-    UserConfig.load(callback);
+    sharedConfigManager.getConfig().then((config) => {
+      if (autoload) this.loadData(config);
+    });
   }
 
-  reloadData = async () => {
+  loadData = async (config: any) => {
     const { q, onLoadComplete } = this.props;
-    const { userConfig } = this.state;
 
     let beginTime = new Date().getTime();
 
@@ -57,8 +49,8 @@ class InjectTransTooltipIcon extends React.Component<
 
     try {
       this.setState({ loading: true });
-      lookUpResult = await sharedTranslate
-        .engine(userConfig.translateEngine)
+      lookUpResult = await sharedTranslateClient
+        .engine(config.translateEngine)
         .lookUp(q, { exclude: ['originData'] });
     } catch (e) {
       lookUpError = e;
@@ -79,22 +71,22 @@ class InjectTransTooltipIcon extends React.Component<
     return (
       <ShadowRoot>
         <Button
-          transparent
-          square
-          style={{
-            border: 'none'
-          }}
-          sm
+          type="link"
           loading={this.state.loading}
-          onClick={() => this.reloadData()}
+          icon={
+            <img
+              src={r('/images/trans_tooltip_icon.png')}
+              alt="icon"
+              style={{ width: '28px' }}
+            />
+          }
+          onClick={() => {
+            sharedConfigManager.getConfig().then((config) => {
+              this.loadData(config);
+            });
+          }}
           {...this.props}
-        >
-          <img
-            src={r('/images/trans_tooltip_icon.png')}
-            alt="icon"
-            style={{ width: '28px' }}
-          />
-        </Button>
+        />
       </ShadowRoot>
     );
   }
