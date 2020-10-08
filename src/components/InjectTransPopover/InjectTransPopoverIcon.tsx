@@ -1,28 +1,27 @@
 import * as React from 'react';
 import { Button } from 'antd';
 import { LookUpResult } from '@wordway/translate-api';
-import { sharedTranslateClient } from '../../networking';
+import { sharedDb, sharedTranslateClient } from '../../networking';
 
-import ShadowRoot from '../ShadowRoot';
 import r from '../../utils/r';
 import { sharedConfigManager } from '../../utils/config';
 
-interface InjectTransTooltipIconProps {
+interface InjectTransPopoverIconProps {
   q: string;
   autoload: boolean;
   onLoadComplete: any;
 }
-interface InjectTransTooltipIconState {
+interface InjectTransPopoverIconState {
   loading: boolean;
 }
 
-class InjectTransTooltipIcon extends React.Component<
-  InjectTransTooltipIconProps,
-  InjectTransTooltipIconState
+class InjectTransPopoverIcon extends React.Component<
+  InjectTransPopoverIconProps,
+  InjectTransPopoverIconState
 > {
   constructor(
-    props: InjectTransTooltipIconProps,
-    state: InjectTransTooltipIconState
+    props: InjectTransPopoverIconProps,
+    state: InjectTransPopoverIconState
   ) {
     super(props, state);
 
@@ -52,6 +51,9 @@ class InjectTransTooltipIcon extends React.Component<
       lookUpResult = await sharedTranslateClient
         .engine(config.translateEngine)
         .lookUp(q, { exclude: ['originData'] });
+
+      sharedDb.data?.translationRecords.push(q);
+      sharedDb.write();
     } catch (e) {
       lookUpError = e;
     } finally {
@@ -69,27 +71,24 @@ class InjectTransTooltipIcon extends React.Component<
 
   render() {
     return (
-      <ShadowRoot>
-        <Button
-          type="link"
-          loading={this.state.loading}
-          icon={
-            <img
-              src={r('/images/trans_tooltip_icon.png')}
-              alt="icon"
-              style={{ width: '28px' }}
-            />
-          }
-          onClick={() => {
-            sharedConfigManager.getConfig().then((config) => {
-              this.loadData(config);
-            });
-          }}
-          {...this.props}
-        />
-      </ShadowRoot>
+      <Button
+        type="link"
+        loading={this.state.loading}
+        icon={
+          <img
+            src={r('/images/trans_tooltip_icon.png')}
+            alt="icon"
+            style={{ width: '26px' }}
+          />
+        }
+        onClick={() => {
+          sharedConfigManager.getConfig().then((config) => {
+            this.loadData(config);
+          });
+        }}
+      />
     );
   }
 }
 
-export default InjectTransTooltipIcon;
+export default InjectTransPopoverIcon;

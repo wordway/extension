@@ -6,13 +6,17 @@ import antdCssStyles from '!!raw-loader!./antd_css.txt';
 
 interface ShadowRootProps {
   children: any;
+  debug?: boolean;
 }
 
 interface ShadowRootState {}
 
 class ShadowRoot extends React.Component<ShadowRootProps, ShadowRootState> {
   render() {
-    const { children } = this.props;
+    const { children, debug } = this.props;
+    if (debug === true) {
+      return <div>{children}</div>;
+    }
     return (
       <>
         <root.div>
@@ -20,7 +24,7 @@ class ShadowRoot extends React.Component<ShadowRootProps, ShadowRootState> {
             <html
               style={{
                 borderRadius: '4px',
-                overflow: 'hidden'
+                overflow: 'hidden',
               }}
             >
               <head>

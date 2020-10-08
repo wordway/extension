@@ -1,110 +1,28 @@
-.trans-tooltip {
-  --success: #38b249;
-  --secondary: #38b249;
-  --primary: #1665d8;
-  --warning: #f6ab2f;
-  --danger: #e6492d;
-  --info: #6977ff;
-  --success-rgb: 56, 178, 73;
-  --secondary-rgb: 56, 178, 73;
-  --primary-rgb: 22, 101, 216;
-  --warning-rgb: 246, 171, 47;
-  --danger-rgb: 230, 73, 45;
-  --info-rgb: 105, 119, 255;
-  --green: #38b249;
-  --blue: #1665d8;
-  --orange: #f6ab2f;
-  --red: #e6492d;
-  --indigo: #6977ff;
-  --yellow: #facf55;
-  --green-rgb: 56, 178, 73;
-  --blue-rgb: 22, 101, 216;
-  --orange-rgb: 246, 171, 47;
-  --red-rgb: 230, 73, 45;
-  --indigo-rgb: 105, 119, 255;
-  --yellow-rgb: 250, 207, 85;
-  --text-main: #3e3f42;
-  --text-on-color: white;
-  --text-adverse-main: white;
-  --text-base: #6b6c6f;
-  --text-adverse-base: #fbfbfd;
-  --text-secondary: #9ea0a5;
-  --text-tertiary: #cecfd2;
-  --border-color-base: #eaedf3;
-  --border-color-main: #d8dce6;
-  --border-color-highlight: #bdc2d1;
-  --border-color-adverse: #2e2e33;
-  --bg-base: #fbfbfd;
-  --bg-main: #ffffff;
-  --bg-adverse-main: #252529;
-
-  z-index: 10000;
-  margin: 8px;
+.inject-trans-popover {
+  z-index: 9007199254740991;
+  margin: 6px;
 }
 
-.trans-tooltip {
+.inject-trans-popover {
   .popper {
     z-index: 9007199254740991;
     background-color: #ffffff;
     border: 1px solid #eaedf3;
-    border-radius: 4px;
+    border-radius: 8px;
     box-shadow: 0 30px 90px -20px rgba(0, 0, 0, 0.4),
       0 0 1px 1px rgba(0, 0, 0, 0.04);
   }
   .popper > .popper-body {
-    padding: 2px;
+    padding: 0;
     margin: 0;
     min-width: 20px;
     min-height: 20px;
-
-    .btn-close {
-      position: absolute;
-      display: flex;
-      width: 28px;
-      height: 28px;
-      padding-left: 0;
-      padding-right: 0;
-      justify-content: center;
-      background: transparent;
-      border: none;
-      outline: none;
-      box-shadow: none;
-      color: #9ea0a5;
-      color: var(--text-secondary);
-      top: 0px;
-      right: 8px;
-      margin-top: 16px;
-      margin-bottom: 16px;
-      opacity: 0.3;
-      &:hover {
-        opacity: 1;
-      }
-      span {
-        display: block;
-        position: relative;
-        width: 12px;
-        &:before,
-        &:after {
-          top: 0;
-          left: 0;
-          position: absolute;
-          background: var(--bg-adverse-main);
-          content: "";
-          height: 2px;
-          width: 12px;
-          transform: rotate(45deg);
-        }
-        &:after {
-          transform: rotate(-45deg);
-        }
-      }
-    }
   }
   .popper > .popper-arrow {
     position: absolute;
     width: 20px;
     height: 8px;
-    &[data-placement*="bottom"] {
+    &[data-placement*='bottom'] {
       top: 0;
       left: 0;
       margin-top: -8px;
@@ -120,7 +38,7 @@
         border-color: transparent transparent #ffffff transparent;
       }
     }
-    &[data-placement*="top"] {
+    &[data-placement*='top'] {
       bottom: 0;
       left: 0;
       margin-bottom: -8px;
@@ -136,7 +54,7 @@
         border-color: #ffffff transparent transparent transparent;
       }
     }
-    &[data-placement*="right"] {
+    &[data-placement*='right'] {
       left: 0;
       margin-left: -8px;
       height: 20px;
@@ -151,7 +69,7 @@
         border-color: transparent #ffffff transparent transparent;
       }
     }
-    &[data-placement*="left"] {
+    &[data-placement*='left'] {
       right: 0;
       margin-right: -8px;
       height: 20px;
@@ -167,7 +85,7 @@
       }
     }
     &::before {
-      content: "";
+      content: '';
       margin: auto;
       display: block;
       width: 0;
@@ -175,7 +93,7 @@
       border-style: solid;
     }
     &::after {
-      content: "";
+      content: '';
       margin: auto;
       display: block;
       width: 0;

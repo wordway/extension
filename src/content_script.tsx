@@ -1,12 +1,13 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { ConfigProvider } from 'antd';
 
-import { InjectTransTooltip } from './components';
+import { InjectTransPopover } from './components';
 import { sharedConfigManager } from './utils/config';
 
 const ELEMENT_ID = '___wordway';
 
-const injectTransTooltip = ({ autoload = false, scopes = [] }: any) => {
+const injectTransTooltip = ({ autoload = false }: any) => {
   const selection: any = document.getSelection();
 
   if (selection.rangeCount === 0) return;
@@ -30,16 +31,7 @@ const injectTransTooltip = ({ autoload = false, scopes = [] }: any) => {
   const englishRegex = /^[a-zA-Z0-9 .?!,:…;-–—()[\]{}"'/]+$/;
   const spaceCount = (q.match(/\s/g) ?? []).length;
 
-  if (
-    !englishRegex.test(q) ||
-    !(
-      (
-        ((scopes || []).includes('word') && spaceCount === 0) || // 单词
-        ((scopes || []).includes('phrase') && spaceCount <= 2) || // 词组
-        ((scopes || []).includes('sentence') && spaceCount > 2)
-      ) // 短句
-    )
-  ) {
+  if (!englishRegex.test(q) || !(spaceCount < 100)) {
     if (el) el.remove();
     return;
   }
@@ -58,15 +50,17 @@ const injectTransTooltip = ({ autoload = false, scopes = [] }: any) => {
   }
 
   ReactDOM.render(
-    <InjectTransTooltip
-      q={q}
-      autoload={autoload}
-      boundingClientRect={selectionRect}
-      onShow={() => {}}
-      onHide={() => {
-        if (el) el.remove();
-      }}
-    />,
+    <ConfigProvider autoInsertSpaceInButton={false}>
+      <InjectTransPopover
+        q={q}
+        autoload={autoload}
+        boundingClientRect={selectionRect}
+        onShow={() => {}}
+        onHide={() => {
+          if (el) el.remove();
+        }}
+      />
+    </ConfigProvider>,
     el
   );
 };
@@ -88,14 +82,12 @@ const onMouseUp = (e: any) => {
 
   sharedConfigManager.getConfig().then((config) => {
     const selectionTranslateMode = config.selectionTranslateMode;
-    // const selectionTranslateScopes = config.selectionTranslateScopes;
-    const selectionTranslateScopes = ['word'];
 
     if (selectionTranslateMode === 'disabled') return;
 
     injectTransTooltip({
-      autoload: false,
-      scopes: selectionTranslateScopes,
+      autoload: selectionTranslateMode === 'enable-translate-tooltip',
+      scopes: ['word'],
     });
   });
 };
@@ -106,11 +98,9 @@ const onKeyDown = (e: KeyboardEvent) => {
   if (!e.shiftKey) return;
 
   sharedConfigManager.getConfig().then((config) => {
-    const selectionTranslateScopes = config.selectionTranslateScopes;
-
     injectTransTooltip({
       autoload: true,
-      scopes: selectionTranslateScopes,
+      scopes: ['word'],
     });
   });
 };

@@ -36,13 +36,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   };
 
   const _handleMessageAccountLogin = () => {
-    const { currentUser } = request.arguments;
-    sharedConfigManager.setCurrentUser(currentUser);
+    const { loggedInUser } = request.arguments;
+    sharedConfigManager.setLoggedInUser(loggedInUser);
     return true;
   };
 
   const _handleMessageAccountLogout = () => {
-    sharedConfigManager.setCurrentUser(null);
+    sharedConfigManager.setLoggedInUser(null);
     return true;
   };
 

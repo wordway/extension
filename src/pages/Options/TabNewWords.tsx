@@ -19,9 +19,9 @@ const TabNewWords = () => {
     setLoading(true);
 
     try {
-      const currentUserId = config.currentUser?.id;
+      const loggedInUserId = config.loggedInUser?.id;
       const resp = await sharedHttpClient.get(
-        `/wordbooks/newwords-for-user-${currentUserId}`,
+        `/wordbooks/newwords-for-user-${loggedInUserId}`,
         {
           params: { include: ['words'] },
         }
@@ -37,11 +37,11 @@ const TabNewWords = () => {
   };
 
   const handleDelete = async (word: any) => {
-    const currentUserId = config?.currentUser?.id;
+    const loggedInUserId = config?.loggedInUser?.id;
 
     try {
       await sharedHttpClient.delete(
-        `/wordbooks/newwords-for-user-${currentUserId}/words/${word}`
+        `/wordbooks/newwords-for-user-${loggedInUserId}/words/${word}`
       );
       loadData();
     } catch (error) {
@@ -69,40 +69,32 @@ const TabNewWords = () => {
             render: (value: any, record: any) => {
               return (
                 <div style={{ display: 'flex' }}>
-                  <div>
+                  <div style={{ flex: 1 }}>
                     <label
                       style={{
-                        fontSize: '18px',
+                        fontSize: '15px',
                       }}
                     >
                       {value}
                     </label>
-                    {/* <div>
-                      {record.definitions.map((e: any) => {
-                        return <p key={JSON.stringify(e)}>{JSON.stringify(e)}</p>;
-                      })}
-                    </div> */}
                   </div>
+                  <Popconfirm
+                    title="确定删除该生词吗？"
+                    onConfirm={() => {
+                      handleDelete(record.word);
+                    }}
+                    okText="是"
+                    cancelText="否"
+                  >
+                    <DeleteOutlined
+                      style={{
+                        fontSize: '16px',
+                        marginLeft: '10px',
+                        marginRight: '10px',
+                      }}
+                    />
+                  </Popconfirm>
                 </div>
-              );
-            },
-          },
-          {
-            dataIndex: 'action',
-            key: 'action',
-            align: 'center',
-            render: (value: any, record: any) => {
-              return (
-                <Popconfirm
-                  title="确定删除该生词吗？"
-                  onConfirm={() => {
-                    handleDelete(record.word);
-                  }}
-                  okText="是"
-                  cancelText="否"
-                >
-                  <DeleteOutlined />
-                </Popconfirm>
               );
             },
           },

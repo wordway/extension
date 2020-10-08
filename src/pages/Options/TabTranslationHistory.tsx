@@ -1,6 +1,5 @@
-import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { Popconfirm, Table, Typography } from 'antd';
+import { Button, Popconfirm, Table, Typography } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 
 import { sharedDb } from '../../networking';
@@ -9,25 +8,18 @@ const { Title, Paragraph } = Typography;
 
 const TabTranslationHistory = () => {
   const [loading, setLoading] = useState(true);
-  const [words, setWords] = useState<Array<any>>([]);
+  const [translationRecords, setTranslationRecords] = useState<Array<any>>([]);
 
   const loadData = async () => {
     setLoading(true);
 
     try {
       await sharedDb.read();
-      // sharedDb.data?.messages?.push('abc1');
-      // sharedDb.data?.messages?.push('abc2');
-      // sharedDb.data?.messages?.push('abc3');
-      // sharedDb.data?.messages?.push('abc4');
-      // await sharedDb.write();
-
-      setWords(
-        (sharedDb.data?.messages || []).map((v) => {
-          return { word: v };
+      setTranslationRecords(
+        (sharedDb.data?.translationRecords || []).map((v) => {
+          return { text: v };
         })
       );
-      console.log(sharedDb.data?.messages || []);
     } catch (error) {
       // skip
     } finally {
@@ -35,12 +27,27 @@ const TabTranslationHistory = () => {
     }
   };
 
-  const handleDelete = async (word: any) => {
+  const handleClear = async () => {
+    try {
+      while ((sharedDb.data?.translationRecords?.length || 0) > 0) {
+        sharedDb.data?.translationRecords.pop();
+      }
+      await sharedDb.write();
+      await loadData();
+    } catch (error) {
+      // skip
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (text: any) => {
     try {
       while (true) {
-        let index: number = sharedDb.data?.messages.indexOf(word) ?? -1;
+        let index: number =
+          sharedDb.data?.translationRecords.indexOf(text) ?? -1;
         if (index !== -1) {
-          sharedDb.data?.messages.splice(index, 1);
+          sharedDb.data?.translationRecords.splice(index, 1);
         } else {
           break;
         }
@@ -64,51 +71,62 @@ const TabTranslationHistory = () => {
       <Paragraph>
         当你使用划词翻译、阅读辅助等功能时将自动记录到你的浏览器中，以便你日后可以进行查阅。
       </Paragraph>
+      <div
+        style={{
+          marginBottom: 16,
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <Button type="ghost" size="small" onClick={() => handleClear()}>
+          清空翻译记录
+        </Button>
+      </div>
       <Table
         size="middle"
         columns={[
           {
-            title: '单词',
-            dataIndex: 'word',
-            key: 'id',
+            title: '单词或短语',
+            dataIndex: 'text',
+            key: 'text',
             render: (value: any, record: any) => {
               return (
-                <div style={{ display: 'flex' }} key={`${record.id}`}>
-                  <div>
+                <div
+                  style={{ display: 'flex', alignItems: 'center' }}
+                  key={`${record.id}`}
+                >
+                  <div style={{ flex: 1 }}>
                     <label
                       style={{
-                        fontSize: '18px',
+                        fontSize: '15px',
                       }}
                     >
                       {value}
                     </label>
                   </div>
+                  <Popconfirm
+                    title="确定删除该记录吗？"
+                    onConfirm={() => {
+                      handleDelete(record.text);
+                    }}
+                    okText="是"
+                    cancelText="否"
+                  >
+                    <DeleteOutlined
+                      style={{
+                        fontSize: '16px',
+                        marginLeft: '10px',
+                        marginRight: '10px',
+                      }}
+                    />
+                  </Popconfirm>
                 </div>
-              );
-            },
-          },
-          {
-            dataIndex: 'action',
-            key: 'action',
-            align: 'center',
-            render: (value: any, record: any) => {
-              return (
-                <Popconfirm
-                  title="确定删除该生词吗？"
-                  onConfirm={() => {
-                    handleDelete(record.word);
-                  }}
-                  okText="是"
-                  cancelText="否"
-                >
-                  <DeleteOutlined />
-                </Popconfirm>
               );
             },
           },
         ]}
         loading={loading}
-        dataSource={words}
+        dataSource={translationRecords}
         bordered
         pagination={{ hideOnSinglePage: true }}
       />

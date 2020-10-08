@@ -54,7 +54,7 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
     super(props, state);
 
     this.state = {
-      currentUser: null,
+      loggedInUser: null,
       selectedTabKey: kTabSelectionTranslate,
       loginModalVisible: false,
     };
@@ -71,15 +71,15 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
   }
 
   onConfigChange(newConfig: Config) {
-    if (!this.state.currentUser && newConfig.currentUser) {
+    if (!this.state.loggedInUser && newConfig.loggedInUser) {
       message.success('登录成功');
     }
-    if (this.state.currentUser && !newConfig.currentUser) {
+    if (this.state.loggedInUser && !newConfig.loggedInUser) {
       message.success('退出成功');
     }
 
     this.setState({
-      currentUser: newConfig.currentUser,
+      loggedInUser: newConfig.loggedInUser,
     });
   }
 
@@ -87,12 +87,12 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
     let config = await sharedConfigManager.getConfig();
 
     this.setState({
-      currentUser: config.currentUser,
+      loggedInUser: config.loggedInUser,
     });
   }
 
   _handleClickLogin = () => {
-    if (this.state.currentUser) return;
+    if (this.state.loggedInUser) return;
 
     if (!chrome.extension) {
       this.setState({ loginModalVisible: true });
@@ -107,10 +107,10 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
   };
 
   _handleClickLogout = () => {
-    if (!this.state.currentUser) return;
+    if (!this.state.loggedInUser) return;
 
     if (!chrome.extension) {
-      sharedConfigManager.setCurrentUser(null);
+      sharedConfigManager.setLoggedInUser(null);
       return;
     }
 
@@ -123,7 +123,7 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
   };
 
   render() {
-    const { selectedTabKey, currentUser, loginModalVisible } = this.state;
+    const { selectedTabKey, loggedInUser, loginModalVisible } = this.state;
     return (
       <>
         <Helmet>
@@ -135,7 +135,7 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
               <img
                 src={r('/images/icon128.png')}
                 alt="logo"
-                style={{ width: '28px', marginRight: '8px' }}
+                style={{ width: '24px', marginRight: '8px' }}
               />
               一路背单词
             </Header>
@@ -145,11 +145,11 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
                   <Avatar
                     size={64}
                     icon={<UserOutlined />}
-                    src={currentUser?.avatarUrl}
+                    src={loggedInUser?.avatarUrl}
                   />
-                  <Text strong>{currentUser?.name || '立即登录'}</Text>
+                  <Text strong>{loggedInUser?.name || '立即登录'}</Text>
                   <Text type="secondary">
-                    {currentUser?.email || '登录以保持数据同步'}
+                    {loggedInUser?.email || '登录以保持数据同步'}
                   </Text>
                 </div>
                 <Menu
@@ -192,7 +192,7 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
                     </Menu.Item>
                   </Menu.ItemGroup>
                 </Menu>
-                {currentUser && (
+                {loggedInUser && (
                   <Popconfirm
                     title="确定退出登录吗？"
                     onConfirm={this._handleClickLogout}
@@ -245,7 +245,7 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
                 loginModalVisible: false,
               });
 
-              sharedConfigManager.setCurrentUser(user);
+              sharedConfigManager.setLoggedInUser(user);
             }}
           />
         </div>

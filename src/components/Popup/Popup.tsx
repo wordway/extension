@@ -1,66 +1,147 @@
 import React from 'react';
-import { Avatar, List, Switch } from 'antd';
+import { Button, Divider, Form, Input } from 'antd';
+import { FormInstance } from 'antd/lib/form';
 import { LookUpResult } from '@wordway/translate-api';
-import { SettingOutlined } from '@ant-design/icons';
+import { BlockOutlined } from '@ant-design/icons';
+
+import { TranslateResultView } from '../../components';
+import { sharedDb, sharedTranslateClient } from '../../networking';
+import { sharedConfigManager } from '../../utils/config';
+import env from '../../utils/env';
+import r from '../../utils/r';
+
+import './Popup.less';
+
+const { TextArea } = Input;
 
 interface PopupProps {}
 
 interface PopupState {
+  loading: boolean;
   q: string;
   lookUpResult?: LookUpResult;
   lookUpError?: Error;
 }
 
 class Popup extends React.Component<PopupProps, PopupState> {
+  formRef = React.createRef<FormInstance>();
+
   constructor(props: PopupProps, state: PopupState) {
     super(props, state);
 
     this.state = {
+      loading: false,
       q: '',
     };
   }
 
-  handleClickSubmit = (event: any) => {
-    event.preventDefault();
-
+  loadData = async () => {
     const { q } = this.state;
 
-    this.setState({
-      q,
+    try {
+      this.setState({ loading: true });
+      let config = await sharedConfigManager.getConfig();
+
+      let lookUpResult = await sharedTranslateClient
+        .engine(config.translateEngine)
+        .lookUp(q, { exclude: ['originData'] });
+
+      sharedDb.data?.translationRecords.push();
+      sharedDb.write();
+
+      this.setState({
+        loading: false,
+        lookUpResult,
+        lookUpError: undefined,
+      });
+    } catch (e) {
+      this.setState({
+        loading: false,
+        lookUpResult: undefined,
+        lookUpError: e,
+      });
+    }
+  };
+
+  handleFinish = (values: any) => {
+    const { q } = values;
+
+    this.setState({ q }, () => {
+      this.loadData();
     });
   };
 
   render() {
+    const { loading, q, lookUpResult, lookUpError } = this.state;
     return (
-      <div
-        style={{
-          border: 'none',
-          height: '100vh',
-          minWidth: '320px',
-          minHeight: '200px',
-        }}
-      >
-        <form onSubmit={this.handleClickSubmit}></form>
-        <List>
-          <List.Item>
-            <List.Item.Meta
-              avatar={
-                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+      <div className="popup">
+        <div className="header">
+          <Button
+            type="text"
+            icon={<BlockOutlined />}
+            size="small"
+            onClick={() => {
+              if (chrome.extension) {
+                chrome.windows.create(
+                  { url: 'popup.html', type: 'popup', width: 360 },
+                  (window) => {}
+                );
               }
-              title="查词引擎"
-              description={'item.email'}
-            />
-            <Switch />
-          </List.Item>
-          <List.Item>
-            <List.Item.Meta
-              avatar={<SettingOutlined />}
-              title="更多设置"
-              description={'点击前往设置页面进行详细设置'}
-            />
-            <Switch />
-          </List.Item>
-        </List>
+            }}
+          />
+        </div>
+        <div className="content">
+          <div className="translate-form">
+            <Form ref={this.formRef} onFinish={this.handleFinish}>
+              <Form.Item>
+                <Form.Item name="q">
+                  <TextArea rows={2} />
+                </Form.Item>
+                <Button
+                  name="submit"
+                  size="small"
+                  type="primary"
+                  style={{
+                    marginLeft: '16px',
+                    position: 'absolute',
+                    right: '10px',
+                    bottom: '10px',
+                  }}
+                  htmlType="submit"
+                  loading={loading}
+                >
+                  翻译
+                </Button>
+              </Form.Item>
+            </Form>
+          </div>
+          {(lookUpResult || lookUpError) && (
+            <>
+              <Divider style={{ margin: 0 }} />
+              <TranslateResultView
+                q={q}
+                lookUpResult={lookUpResult}
+                lookUpError={lookUpError}
+              />
+            </>
+          )}
+        </div>
+        <div className="footer">
+          <span className="copyright">© 2020 LiJianying</span>
+          <a
+            onClick={() => {
+              if (chrome.extension) {
+                chrome.runtime.sendMessage({ method: 'openOptionsPage' });
+              }
+            }}
+          >
+            扩展程序选项
+          </a>
+          <span>‧</span>
+          <a href={env.webURL} target="_blank">
+            一路背单词
+          </a>
+        </div>
       </div>
     );
   }

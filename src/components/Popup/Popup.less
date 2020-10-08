@@ -1,0 +1,53 @@
+@import '../../styles/antd-custom.less';
+html,
+body {
+  height: auto !important;
+}
+
+.popup {
+  min-width: 360px;
+}
+
+.popup > .header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  padding-left: 16px;
+  padding-right: 8px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.popup > .content > .translate-form {
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 0px;
+  padding-bottom: 16px;
+  .ant-form-item {
+    margin-bottom: 0;
+  }
+}
+
+.popup > .content > .translate-result-view {
+  padding: 16px;
+}
+
+.popup > .footer {
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding-left: 16px;
+  padding-right: 8px;
+  font-size: 12px;
+  span {
+    margin-left: 6px;
+    margin-right: 6px;
+  }
+  .copyright {
+    margin-right: 12px;
+  }
+}

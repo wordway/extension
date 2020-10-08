@@ -1,0 +1,122 @@
+@import '../../styles/antd-custom.less';
+
+.translate-result-view {
+  // 错误
+  .error {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    span {
+      font-size: 14px;
+      font-weight: 500;
+    }
+  }
+}
+
+.translate-result-view {
+  // 单词
+  .word {
+    display: flex;
+    flex-direction: row;
+
+    h4 {
+      margin: 0;
+    }
+    .ant-btn,
+    .ant-btn > .anticon {
+      font-size: 12px;
+    }
+  }
+  // 贴士
+  .tip {
+    margin-top: 12px;
+    padding: 8px 10px !important;
+  }
+  // 发音
+  .ipa {
+    margin-top: 8px;
+    .ipa-item {
+      display: inline-block;
+      margin-right: 10px;
+      color: rgba(0, 0, 0, 0.65);
+    }
+    .ipa-item-soundplay {
+      color: @primary-color;
+      opacity: 0.9;
+      min-width: 30px;
+      height: 30px;
+      padding-left: 4px;
+      padding-right: 4px;
+      background: transparent;
+      border: none;
+      margin-top: 4px;
+      outline: none;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+  // 释义
+  .definitions {
+    margin-top: 8px;
+    margin-bottom: 0;
+    padding: 0;
+    .definition-item {
+      display: flex;
+      flex-direction: row;
+      margin: 4px 0 0 0;
+      padding: 0;
+      &:first-child {
+        margin-top: 0px;
+      }
+    }
+    .definition-item-type {
+      font-size: 13px;
+      font-weight: bold;
+      padding-top: 0;
+      padding-bottom: 0;
+      padding-left: 4px;
+      padding-right: 4px;
+      margin-right: 10px;
+      min-width: 42px;
+      height: 20px;
+      line-height: 20px;
+      background-color: #9ea0a5;
+      color: #ffffff;
+      vertical-align: middle;
+      text-align: center;
+    }
+    .definition-item-value {
+      font-weight: bold;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex: 1;
+      line-height: 20px;
+    }
+  }
+  // 时态
+  .tenses {
+    margin-top: 12px;
+    .tense-item-name {
+      margin: 0 6px 0 0;
+      font-size: 14px;
+    }
+    .tense-item-word {
+      color: @primary-color;
+      margin: 0 6px 0 0;
+      font-size: 14px;
+    }
+  }
+  // 图片
+  .images {
+    margin-top: 12px;
+    .image-item {
+      width: 80px;
+      height: 80px;
+      border: 1px solid #ccc;
+    }
+  }
+}

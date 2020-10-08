@@ -1,26 +1,12 @@
-import localforage from 'localforage';
-import syncDriver from 'localforage-webextensionstorage-driver/sync';
-
-declare var window: any;
-
-window.localforage = localforage;
-
-if (chrome.extension) {
-  localforage
-    .defineDriver(syncDriver)
-    .then(() => localforage.setDriver('webExtensionSyncStorage'));
-} else {
-  localforage.setDriver(localforage.LOCALSTORAGE);
-}
+import localforage from './localforage';
 
 const DEFAULT_TRANSLATE_ENGINE = 'youdao-web';
 
 export class Config {
-  public currentUser: any;
+  public loggedInUser: any;
   public translateEngine: string = DEFAULT_TRANSLATE_ENGINE;
   public autoplayPronunciation: string = 'us-pronunciation';
   public selectionTranslateMode: string = 'enable-translate-tooltip';
-  public selectionTranslateScopes: Array<string> = [];
 }
 
 export interface ConfigListener {
@@ -66,10 +52,9 @@ export default class ConfigManager {
     return this.config;
   }
 
-  async setCurrentUser(user: any) {
-    this.config.currentUser =
+  async setLoggedInUser(user: any) {
+    this.config.loggedInUser =
       typeof user === 'string' ? JSON.parse(user) : user;
-
     await this.save();
   }
 

@@ -47,7 +47,7 @@ const TabAboutUs = () => {
         pagination={{ hideOnSinglePage: true }}
       />
       <Title level={4} style={{ marginTop: '32px' }}>
-        加入用户讨论组
+        用户讨论组
       </Title>
       <Table
         size="middle"

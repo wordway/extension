@@ -1,17 +1,5 @@
 import { IAdapter } from 'lowdb/lib/Low';
-import localforage from 'localforage';
-import syncDriver from 'localforage-webextensionstorage-driver/sync';
-
-declare var window: any;
-window.localforage = localforage;
-
-if (chrome.extension) {
-  localforage
-    .defineDriver(syncDriver)
-    .then(() => localforage.setDriver('webExtensionSyncStorage'));
-} else {
-  localforage.setDriver(localforage.LOCALSTORAGE);
-}
+import localforage from '../../utils/localforage';
 
 class LocalForageAdapter implements IAdapter {
   public key: string;

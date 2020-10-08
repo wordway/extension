@@ -7,7 +7,8 @@ const TabReadingAid = () => {
   return (
     <>
       <Title level={1}>阅读辅助</Title>
-      <Paragraph></Paragraph>
+      <Paragraph>
+      </Paragraph>
     </>
   );
 };

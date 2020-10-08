@@ -3,10 +3,12 @@ import { Popper } from 'react-popper';
 import classNames from 'classnames';
 import { LookUpResult } from '@wordway/translate-api';
 
-import InjectTransTooltipContent from './InjectTransTooltipContent';
-import InjectTransTooltipIcon from './InjectTransTooltipIcon';
+import env from '../../utils/env';
+import ShadowRoot from '../ShadowRoot';
+import InjectTransPopoverBody from './InjectTransPopoverBody';
+import InjectTransPopoverIcon from './InjectTransPopoverIcon';
 
-import './InjectTransTooltip.less';
+import './InjectTransPopover.less';
 
 class VirtualReferenceElement {
   boundingClientRect: DOMRect;
@@ -28,7 +30,7 @@ class VirtualReferenceElement {
   }
 }
 
-interface InjectTransTooltipProps {
+interface InjectTransPopoverProps {
   q: string;
   autoload: boolean;
   boundingClientRect: DOMRect;
@@ -36,7 +38,7 @@ interface InjectTransTooltipProps {
   onHide: any;
 }
 
-interface InjectTransTooltipState {
+interface InjectTransPopoverState {
   virtualReferenceElement: VirtualReferenceElement;
   visible: boolean;
   switching: boolean;
@@ -44,11 +46,11 @@ interface InjectTransTooltipState {
   lookUpError?: Error;
 }
 
-class InjectTransTooltip extends React.Component<
-  InjectTransTooltipProps,
-  InjectTransTooltipState
+class InjectTransPopover extends React.Component<
+  InjectTransPopoverProps,
+  InjectTransPopoverState
 > {
-  constructor(props: InjectTransTooltipProps, state: InjectTransTooltipState) {
+  constructor(props: InjectTransPopoverProps, state: InjectTransPopoverState) {
     super(props, state);
 
     this.state = {
@@ -116,7 +118,7 @@ class InjectTransTooltip extends React.Component<
     };
 
     return (
-      <InjectTransTooltipIcon
+      <InjectTransPopoverIcon
         q={q}
         autoload={autoload}
         onLoadComplete={handleLoadComplete}
@@ -126,16 +128,11 @@ class InjectTransTooltip extends React.Component<
 
   renderTransTooltipContent = () => {
     return (
-      <>
-        <InjectTransTooltipContent
-          q={this.props.q}
-          lookUpResult={this.state.lookUpResult}
-          lookUpError={this.state.lookUpError}
-        />
-        <button onClick={this.handleClose} className={'btn-close'}>
-          <span />
-        </button>
-      </>
+      <InjectTransPopoverBody
+        q={this.props.q}
+        lookUpResult={this.state.lookUpResult}
+        lookUpError={this.state.lookUpError}
+      />
     );
   };
 
@@ -165,13 +162,15 @@ class InjectTransTooltip extends React.Component<
     return (
       <Popper referenceElement={this.state.virtualReferenceElement}>
         {({ ref, style, placement, arrowProps }) => (
-          <div ref={ref} className={'trans-tooltip'} style={style}>
+          <div ref={ref} className={'inject-trans-popover'} style={style}>
             <div
               className={classNames('popper', {
                 ...popperClassNames(placement),
               })}
             >
-              <div className={'popper-body'}>{popperBody}</div>
+              <div className={'popper-body'}>
+                <ShadowRoot debug={env.env !== 'production'}>{popperBody}</ShadowRoot>
+              </div>
               {!(lookUpResult || lookUpError) ? null : (
                 <div
                   ref={arrowProps.ref}
@@ -188,4 +187,4 @@ class InjectTransTooltip extends React.Component<
   }
 }
 
-export default InjectTransTooltip;
+export default InjectTransPopover;

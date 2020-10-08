@@ -87,12 +87,12 @@ class HttpClient implements ConfigListener {
     sharedConfigManager.addListener(this);
     setTimeout(async () => {
       const config = await sharedConfigManager.getConfig();
-      this.accessToken = config.currentUser?.jwtToken?.accessToken;
+      this.accessToken = config.loggedInUser?.jwtToken?.accessToken;
     }, 0);
   }
 
   onConfigChange(newConfig: Config) {
-    this.accessToken = newConfig.currentUser?.jwtToken?.accessToken;
+    this.accessToken = newConfig.loggedInUser?.jwtToken?.accessToken;
   }
 
   public request<T = any, R = AxiosResponse<T>>(
