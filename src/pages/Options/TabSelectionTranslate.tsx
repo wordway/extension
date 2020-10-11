@@ -1,6 +1,6 @@
 import React from 'react';
 import { List, Table, Typography, Switch, Radio, Select } from 'antd';
-import translateEngines from '../../components/SelectTranslateEngine/options';
+import translateEngines from '../../networking/translateClient/engines';
 import {
   sharedConfigManager,
   Config,
@@ -156,8 +156,8 @@ class TabSelectionTranslate
           columns={[
             {
               title: '名称',
-              dataIndex: 'label',
-              key: 'label',
+              dataIndex: 'name',
+              key: 'name',
             },
           ]}
           dataSource={translateEngines}

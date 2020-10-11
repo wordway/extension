@@ -42,7 +42,7 @@ const cloudoptAIEngine = new CloudoptAIEngine();
 const bingWebEngine = new BingWebEngine();
 const youdaoWebEngine = new YoudaoWebEngine();
 
-const sharedTranslateClient = new Translate([
+const sharedTranslateClient: Translate | any = new Translate([
   cloudoptAIEngine,
   bingWebEngine,
   youdaoWebEngine,

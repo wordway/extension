@@ -55,15 +55,15 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
 
     this.state = {
       loggedInUser: null,
-      selectedTabKey: kTabSelectionTranslate,
       loginModalVisible: false,
+      selectedTabKey: kTabSelectionTranslate,
     };
   }
 
   componentDidMount() {
     sharedConfigManager.addListener(this);
 
-    setTimeout(() => this._loadData(), 1);
+    setTimeout(() => this._init(), 1);
   }
 
   componentWillUnmount() {
@@ -83,7 +83,7 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
     });
   }
 
-  async _loadData() {
+  async _init() {
     let config = await sharedConfigManager.getConfig();
 
     this.setState({

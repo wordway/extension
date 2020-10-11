@@ -15,6 +15,7 @@
 }
 
 .translate-result-view {
+  position: relative;
   // 单词
   .word {
     display: flex;
@@ -117,6 +118,18 @@
       width: 80px;
       height: 80px;
       border: 1px solid #ccc;
+    }
+  }
+}
+.translate-result-view {
+  // 来源
+  .source {
+    position: absolute;
+    right: 16px;
+    bottom: 12px;
+    img {
+      width: 16px;
+      height: 16px;
     }
   }
 }

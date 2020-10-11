@@ -5,6 +5,7 @@ import { LookUpResult } from '@wordway/translate-api';
 
 import { sharedHttpClient } from '../../networking';
 import { sharedConfigManager } from '../../utils/config';
+import translateEngines from '../../networking/translateClient/engines';
 
 import './TranslateResultView.less';
 
@@ -270,8 +271,12 @@ class TranslateResultView extends React.Component<
             ))}
           </div>
         )}
-        <div style={{ marginTop: '10px' }}>
-          <span>{lookUpResult?.engine}</span>
+        <div className="source">
+          <img
+            src={
+              translateEngines.find((v) => v.key === lookUpResult?.engine)?.icon
+            }
+          />
         </div>
       </>
     );

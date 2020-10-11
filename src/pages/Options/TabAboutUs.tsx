@@ -9,7 +9,7 @@ const TabAboutUs = () => {
     <>
       <Title level={1}>关于我们</Title>
       <Paragraph>
-        © 2019-2020 LiJianying 保留所有版权。
+        © 2020 LiJianying 保留所有版权。
       </Paragraph>
       <Title level={4}>统计数据</Title>
       <Table
