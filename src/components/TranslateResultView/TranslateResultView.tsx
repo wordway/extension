@@ -84,6 +84,7 @@ class TranslateResultView extends React.Component<
       if (wordbookWord) {
         this.setState({
           newWordIsAdded: true,
+          newWordIsAdding: false,
         });
       }
     } catch (e) {
@@ -170,6 +171,7 @@ class TranslateResultView extends React.Component<
             <Button
               type="ghost"
               size="small"
+              loading={false}
               onClick={() => {
                 this.handleClickViewMyNewWords();
               }}

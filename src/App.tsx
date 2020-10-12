@@ -8,8 +8,8 @@ import './content_script';
 const App: React.FC = () => {
   return (
     <ConfigProvider autoInsertSpaceInButton={false}>
-      <Popup />
-      {/* <OptionsPage /> */}
+      {/* <Popup /> */}
+      <OptionsPage />
     </ConfigProvider>
   );
 };

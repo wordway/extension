@@ -2,7 +2,9 @@ import * as React from 'react';
 import root from 'react-shadow';
 
 // eslint-disable-next-line
-import antdCssStyles from '!!raw-loader!./antd_css.txt';
+import cssTextAntd from '!!raw-loader!./css_antd.txt';
+// eslint-disable-next-line
+import cssTextStyles from '!!raw-loader!./css_styles.txt';
 
 interface ShadowRootProps {
   children: any;
@@ -28,7 +30,8 @@ class ShadowRoot extends React.Component<ShadowRootProps, ShadowRootState> {
               }}
             >
               <head>
-                <style>{antdCssStyles}</style>
+                <style>{cssTextAntd}</style>
+                <style>{cssTextStyles}</style>
               </head>
               <body>{children}</body>
             </html>

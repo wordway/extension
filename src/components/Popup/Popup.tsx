@@ -112,6 +112,14 @@ class Popup extends React.Component<PopupProps, PopupState> {
     const { loading, q, lookUpResult, lookUpError } = this.state;
     return (
       <div id="popup" className="popup">
+        <style>
+          {`
+          html,
+          body {
+            height: auto !important;
+          }
+          `}
+        </style>
         <div className="header">
           <a href={env.webURL} target="_blank">
             <img
