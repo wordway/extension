@@ -2,7 +2,7 @@ import Low from 'lowdb/lib/Low';
 import LocalForageAdapter from './LocalForageAdapter';
 
 interface IData {
-  translationRecords: string[];
+  translationRecords: any[];
   words: any[];
 }
 

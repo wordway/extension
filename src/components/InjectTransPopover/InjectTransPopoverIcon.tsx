@@ -52,7 +52,7 @@ class InjectTransPopoverIcon extends React.Component<
         .engine(config.translateEngine)
         .lookUp(q, { exclude: ['originData'] });
 
-      sharedDb.data?.translationRecords.push(q);
+      sharedDb.data?.translationRecords.splice(0, 0, lookUpResult);
       sharedDb.write();
     } catch (e) {
       lookUpError = e;

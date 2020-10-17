@@ -90,7 +90,7 @@ class Popup extends React.Component<PopupProps, PopupState> {
         .engine(config.translateEngine)
         .lookUp(q, { exclude: ['originData'] });
 
-      sharedDb.data?.translationRecords.push();
+      sharedDb.data?.translationRecords.splice(0, 0, lookUpResult);
       sharedDb.write();
 
       this.setState({
@@ -121,7 +121,7 @@ class Popup extends React.Component<PopupProps, PopupState> {
           `}
         </style>
         <div className="header">
-          <a href={env.webURL} target="_blank">
+          <a href={env.webURL} target="_blank" rel="noopener noreferrer">
             <img
               src={r('/images/icon128.png')}
               alt="logo"

@@ -3,10 +3,15 @@ import { Button, Popconfirm, Table, Typography } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 
 import { sharedDb } from '../../networking';
+import { WordItem } from '../../components';
 
 const { Title, Paragraph } = Typography;
 
-const TabTranslationHistory = () => {
+interface TabTranslationHistoryProps {
+  visible: boolean;
+}
+
+const TabTranslationHistory = (props: TabTranslationHistoryProps) => {
   const [loading, setLoading] = useState(true);
   const [translationRecords, setTranslationRecords] = useState<Array<any>>([]);
 
@@ -15,11 +20,7 @@ const TabTranslationHistory = () => {
 
     try {
       await sharedDb.read();
-      setTranslationRecords(
-        (sharedDb.data?.translationRecords || []).map((v) => {
-          return { text: v };
-        })
-      );
+      setTranslationRecords(sharedDb.data?.translationRecords || []);
     } catch (error) {
       // skip
     } finally {
@@ -41,11 +42,13 @@ const TabTranslationHistory = () => {
     }
   };
 
-  const handleDelete = async (text: any) => {
+  const handleDelete = async (word: any) => {
     try {
       while (true) {
         let index: number =
-          sharedDb.data?.translationRecords.indexOf(text) ?? -1;
+          sharedDb.data?.translationRecords.findIndex(
+            (v) => v.word === word.word
+          ) ?? -1;
         if (index !== -1) {
           sharedDb.data?.translationRecords.splice(index, 1);
         } else {
@@ -62,8 +65,9 @@ const TabTranslationHistory = () => {
   };
 
   useEffect(() => {
+    if (!props.visible) return;
     loadData();
-  }, []);
+  }, [props.visible]);
 
   return (
     <>
@@ -79,35 +83,26 @@ const TabTranslationHistory = () => {
         }}
       >
         <Button type="ghost" size="small" onClick={() => handleClear()}>
-          清空翻译记录
+          清空记录
         </Button>
       </div>
       <Table
         size="middle"
         columns={[
           {
-            title: '单词或短语',
+            title: '单词',
             dataIndex: 'text',
             key: 'text',
-            render: (value: any, record: any) => {
+            render: (_: any, record: any) => {
               return (
-                <div
-                  style={{ display: 'flex', alignItems: 'center' }}
-                  key={`${record.id}`}
-                >
+                <div key={`${record.word}`} style={{ display: 'flex' }}>
                   <div style={{ flex: 1 }}>
-                    <label
-                      style={{
-                        fontSize: '15px',
-                      }}
-                    >
-                      {value}
-                    </label>
+                    <WordItem word={record} />
                   </div>
                   <Popconfirm
                     title="确定删除该记录吗？"
                     onConfirm={() => {
-                      handleDelete(record.text);
+                      handleDelete(record);
                     }}
                     okText="是"
                     cancelText="否"
@@ -115,8 +110,9 @@ const TabTranslationHistory = () => {
                     <DeleteOutlined
                       style={{
                         fontSize: '16px',
+                        marginTop: '10px',
                         marginLeft: '10px',
-                        marginRight: '10px',
+                        marginRight: '0px',
                       }}
                     />
                   </Popconfirm>

@@ -212,10 +212,12 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
               <Content>
                 <Tabs activeKey={selectedTabKey} renderTabBar={() => <div />}>
                   <TabPane key={kTabNewWords}>
-                    <TabNewWords />
+                    <TabNewWords visible={selectedTabKey === kTabNewWords} />
                   </TabPane>
                   <TabPane key={kTabTranslationHistory}>
-                    <TabTranslationHistory />
+                    <TabTranslationHistory
+                      visible={selectedTabKey === kTabTranslationHistory}
+                    />
                   </TabPane>
                   <TabPane key={kTabSelectionTranslate}>
                     <TabSelectionTranslate />

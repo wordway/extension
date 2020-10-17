@@ -169,6 +169,7 @@ class TranslateResultView extends React.Component<
           </Title>
           {newWordIsAdded ? (
             <Button
+              key="view-my-newwords"
               type="ghost"
               size="small"
               loading={false}
@@ -180,6 +181,7 @@ class TranslateResultView extends React.Component<
             </Button>
           ) : (
             <Button
+              key="add-to-my-newwords"
               type="ghost"
               size="small"
               loading={newWordIsAdding}
@@ -278,6 +280,7 @@ class TranslateResultView extends React.Component<
             src={
               translateEngines.find((v) => v.key === lookUpResult?.engine)?.icon
             }
+            alt=""
           />
         </div>
       </>

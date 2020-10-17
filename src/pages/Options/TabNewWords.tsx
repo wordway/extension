@@ -6,9 +6,15 @@ import { Result, Wordbook } from '../../interfaces';
 import { sharedHttpClient } from '../../networking';
 import { sharedConfigManager, Config } from '../../utils/config';
 
+import { WordItem } from '../../components';
+
 const { Title, Paragraph } = Typography;
 
-const TabNewWords = () => {
+interface TabNewWordsProps {
+  visible: boolean;
+}
+
+const TabNewWords = (props: TabNewWordsProps) => {
   let [config, setConfig] = useState<Config | null>(null);
   const [loading, setLoading] = useState(true);
   const [words, setWords] = useState<Array<any>>([]);
@@ -52,12 +58,13 @@ const TabNewWords = () => {
   };
 
   useEffect(() => {
+    if (!props.visible) return;
     loadData();
-  }, []);
+  }, [props.visible]);
 
   return (
-    <>
-      <Title level={1}>生词本</Title>
+    <div className="tab-newwords">
+      <Title level={1}>我的生词本</Title>
       <Paragraph></Paragraph>
       <Table
         size="middle"
@@ -66,17 +73,11 @@ const TabNewWords = () => {
             title: '单词',
             dataIndex: 'word',
             key: 'word',
-            render: (value: any, record: any) => {
+            render: (_: any, record: any) => {
               return (
-                <div style={{ display: 'flex' }}>
+                <div key={record.word} style={{ display: 'flex' }}>
                   <div style={{ flex: 1 }}>
-                    <label
-                      style={{
-                        fontSize: '15px',
-                      }}
-                    >
-                      {value}
-                    </label>
+                    <WordItem word={record} />
                   </div>
                   <Popconfirm
                     title="确定删除该生词吗？"
@@ -89,8 +90,9 @@ const TabNewWords = () => {
                     <DeleteOutlined
                       style={{
                         fontSize: '16px',
+                        marginTop: '10px',
                         marginLeft: '10px',
-                        marginRight: '10px',
+                        marginRight: '0px',
                       }}
                     />
                   </Popconfirm>
@@ -104,7 +106,7 @@ const TabNewWords = () => {
         bordered
         pagination={{ hideOnSinglePage: true }}
       />
-    </>
+    </div>
   );
 };
 
