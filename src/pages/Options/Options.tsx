@@ -14,10 +14,11 @@ import {
   TranslationOutlined,
   UserOutlined,
   InfoCircleOutlined,
-  ReadOutlined,
+  // ReadOutlined,
   BookOutlined,
-  ExperimentOutlined,
+  // ExperimentOutlined,
   HistoryOutlined,
+  GithubOutlined,
 } from '@ant-design/icons';
 
 import env from '../../utils/env';
@@ -132,12 +133,22 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
         <div className="page-options">
           <Layout>
             <Header>
-              <img
-                src={r('/images/icon128.png')}
-                alt="logo"
-                style={{ width: '24px', marginRight: '8px' }}
-              />
-              一路背单词
+              <a href={env.webURL} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={r('/images/icon128.png')}
+                  alt="logo"
+                  style={{ width: '24px', marginRight: '8px' }}
+                />
+                <span>一路背单词（查词助手）</span>
+              </a>
+              <div style={{ flex: 1 }} />
+              <a
+                href="https://github.com/wordway/wordway-extension"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <GithubOutlined style={{ fontSize: '18px' }} />
+              </a>
             </Header>
             <Layout>
               <Sider theme="light" width={220}>
@@ -176,16 +187,16 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
                       <TranslationOutlined />
                       划词翻译
                     </Menu.Item>
-                    <Menu.Item key={kTabReadingAid}>
+                    {/* <Menu.Item key={kTabReadingAid}>
                       <ReadOutlined />
                       阅读辅助
-                    </Menu.Item>
+                    </Menu.Item> */}
                   </Menu.ItemGroup>
                   <Menu.ItemGroup title="其他设置">
-                    <Menu.Item key={kTabExperimentalFeature}>
+                    {/* <Menu.Item key={kTabExperimentalFeature}>
                       <ExperimentOutlined />
                       实验性功能
-                    </Menu.Item>
+                    </Menu.Item> */}
                     <Menu.Item key={kTabAboutUs}>
                       <InfoCircleOutlined />
                       关于我们
@@ -212,7 +223,10 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
               <Content>
                 <Tabs activeKey={selectedTabKey} renderTabBar={() => <div />}>
                   <TabPane key={kTabNewWords}>
-                    <TabNewWords visible={selectedTabKey === kTabNewWords} />
+                    <TabNewWords
+                      visible={selectedTabKey === kTabNewWords}
+                      loggedInUser={loggedInUser}
+                    />
                   </TabPane>
                   <TabPane key={kTabTranslationHistory}>
                     <TabTranslationHistory

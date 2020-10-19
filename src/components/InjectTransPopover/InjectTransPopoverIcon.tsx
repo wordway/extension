@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Button } from 'antd';
 import { LookUpResult } from '@wordway/translate-api';
-import { sharedDb, sharedTranslateClient } from '../../networking';
+import { sharedTranslateClient } from '../../networking';
 
 import r from '../../utils/r';
 import { sharedConfigManager } from '../../utils/config';
+import { sharedDbHelper } from '../../networking/db';
 
 interface InjectTransPopoverIconProps {
   q: string;
@@ -52,8 +53,7 @@ class InjectTransPopoverIcon extends React.Component<
         .engine(config.translateEngine)
         .lookUp(q, { exclude: ['originData'] });
 
-      sharedDb.data?.translationRecords.splice(0, 0, lookUpResult);
-      sharedDb.write();
+      sharedDbHelper.addTranslationRecord(lookUpResult);
     } catch (e) {
       lookUpError = e;
     } finally {

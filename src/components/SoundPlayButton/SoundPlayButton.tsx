@@ -1,10 +1,7 @@
 import React from 'react';
-import { Typography } from 'antd';
 import { SoundOutlined } from '@ant-design/icons';
 
 import './SoundPlayButton.less';
-
-const { Text } = Typography;
 
 interface SoundPlayButtonProps {
   pronunciationUrl: string;

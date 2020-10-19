@@ -14,7 +14,7 @@ const { Title } = Typography;
 interface TranslateResultViewProps {
   q: string;
   lookUpResult?: LookUpResult;
-  lookUpError?: Error;
+  lookUpError?: Error | any;
 }
 
 interface TranslateResultViewState {
@@ -123,9 +123,18 @@ class TranslateResultView extends React.Component<
     const { lookUpError }: TranslateResultViewProps = this.props;
     if (!lookUpError) return <></>;
 
+    let message = lookUpError?.message;
+
+    if (
+      lookUpError?.response?.status === 404 ||
+      lookUpError?.response?.status === 500
+    ) {
+      message = `没有找到与 ${this.props.q} 相关的结果。`;
+    }
+
     return (
       <div className="error">
-        <span>{lookUpError?.message}</span>
+        <span>{message}</span>
       </div>
     );
   };
@@ -161,12 +170,28 @@ class TranslateResultView extends React.Component<
       );
     }
 
+    const translateEngine = translateEngines.find(
+      (v) => v.key === lookUpResult?.engine
+    );
+
     return (
       <>
         <div className="word">
-          <Title level={4} style={{ flex: 1 }}>
-            {lookUpResult?.word}
-          </Title>
+          <Title level={4}>{lookUpResult?.word}</Title>
+          <div className="source">
+            <a
+              href={`${translateEngine?.lookUpUrl}${lookUpResult?.word}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={translateEngine?.icon}
+                alt={translateEngine?.name}
+                title={translateEngine?.name}
+              />
+            </a>
+          </div>
+          <div style={{ flex: 1 }} />
           {newWordIsAdded ? (
             <Button
               key="view-my-newwords"
@@ -255,7 +280,13 @@ class TranslateResultView extends React.Component<
                 <span className="tense-item-name">{name}</span>
                 {values?.map((value: any) => (
                   <span key={`${name}-${value}`} className="tense-item-word">
-                    {value}
+                    <a
+                      href={`${translateEngine?.lookUpUrl}${value}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {value}
+                    </a>
                   </span>
                 ))}
               </span>
@@ -275,14 +306,6 @@ class TranslateResultView extends React.Component<
             ))}
           </div>
         )}
-        <div className="source">
-          <img
-            src={
-              translateEngines.find((v) => v.key === lookUpResult?.engine)?.icon
-            }
-            alt=""
-          />
-        </div>
       </>
     );
   };

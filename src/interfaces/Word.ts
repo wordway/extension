@@ -1,5 +1,6 @@
 export type Word = {
   id: number;
+  engine: string;
   word: string;
   tip?: string;
   definitions?: Array<any>;

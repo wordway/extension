@@ -73,7 +73,7 @@ const TabTranslationHistory = (props: TabTranslationHistoryProps) => {
     <>
       <Title level={1}>翻译记录</Title>
       <Paragraph>
-        当你使用划词翻译、阅读辅助等功能时将自动记录到你的浏览器中，以便你日后可以进行查阅。
+        当你使用划词翻译功能时将自动记录到你的浏览器中，以便你日后可以进行查阅。
       </Paragraph>
       <div
         style={{
@@ -82,9 +82,18 @@ const TabTranslationHistory = (props: TabTranslationHistoryProps) => {
           justifyContent: 'flex-end',
         }}
       >
-        <Button type="ghost" size="small" onClick={() => handleClear()}>
-          清空记录
-        </Button>
+        <Popconfirm
+          title="确定清空记录吗？"
+          onConfirm={() => {
+            handleClear();
+          }}
+          okText="是"
+          cancelText="否"
+        >
+          <Button type="ghost" size="small">
+            清空记录
+          </Button>
+        </Popconfirm>
       </div>
       <Table
         size="middle"

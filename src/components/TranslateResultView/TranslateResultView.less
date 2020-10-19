@@ -20,6 +20,17 @@
   .word {
     display: flex;
     flex-direction: row;
+    align-items: center;
+
+    // 来源
+    .source {
+      display: none;
+      margin-left: 8px;
+      img {
+        width: 16px;
+        height: 16px;
+      }
+    }
 
     h4 {
       margin: 0;
@@ -27,6 +38,12 @@
     .ant-btn,
     .ant-btn > .anticon {
       font-size: 12px;
+    }
+
+    &:hover {
+      .source {
+        display: inline-flex;
+      }
     }
   }
   // 贴士
@@ -118,18 +135,6 @@
       width: 80px;
       height: 80px;
       border: 1px solid #ccc;
-    }
-  }
-}
-.translate-result-view {
-  // 来源
-  .source {
-    position: absolute;
-    right: 16px;
-    bottom: 12px;
-    img {
-      width: 16px;
-      height: 16px;
     }
   }
 }

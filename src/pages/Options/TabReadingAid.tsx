@@ -1,14 +1,14 @@
 import React from 'react';
 import { Typography } from 'antd';
-// import Mark from 'mark.js';
+import Mark from 'mark.js';
 
 const { Title, Paragraph } = Typography;
 
 const TabReadingAid = () => {
-  // setTimeout(() => {
-  //   var instance = new Mark('body');
-  //   instance.mark('custom');
-  // }, 1000);
+  setTimeout(() => {
+    var instance = new Mark('body');
+    instance.mark('custom');
+  }, 1000);
 
   return (
     <>

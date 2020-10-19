@@ -12,6 +12,7 @@ const { Title, Paragraph } = Typography;
 
 interface TabNewWordsProps {
   visible: boolean;
+  loggedInUser: any;
 }
 
 const TabNewWords = (props: TabNewWordsProps) => {
@@ -36,7 +37,7 @@ const TabNewWords = (props: TabNewWordsProps) => {
 
       setWords(r.data?.words || []);
     } catch (error) {
-      // skip
+      setWords([]);
     } finally {
       setLoading(false);
     }
@@ -60,7 +61,7 @@ const TabNewWords = (props: TabNewWordsProps) => {
   useEffect(() => {
     if (!props.visible) return;
     loadData();
-  }, [props.visible]);
+  }, [props.visible, props.loggedInUser]);
 
   return (
     <div className="tab-newwords">

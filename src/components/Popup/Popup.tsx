@@ -9,12 +9,13 @@ import {
 } from '@ant-design/icons';
 
 import { TranslateResultView } from '../../components';
-import { sharedDb, sharedTranslateClient } from '../../networking';
+import { sharedTranslateClient } from '../../networking';
 import { sharedConfigManager } from '../../utils/config';
 import env from '../../utils/env';
 import r from '../../utils/r';
 
 import './Popup.less';
+import { sharedDbHelper } from '../../networking/db';
 
 const { TextArea } = Input;
 
@@ -90,8 +91,7 @@ class Popup extends React.Component<PopupProps, PopupState> {
         .engine(config.translateEngine)
         .lookUp(q, { exclude: ['originData'] });
 
-      sharedDb.data?.translationRecords.splice(0, 0, lookUpResult);
-      sharedDb.write();
+      sharedDbHelper.addTranslationRecord(lookUpResult);
 
       this.setState({
         q,
@@ -101,6 +101,7 @@ class Popup extends React.Component<PopupProps, PopupState> {
       });
     } catch (e) {
       this.setState({
+        q,
         loading: false,
         lookUpResult: undefined,
         lookUpError: e,
@@ -204,7 +205,9 @@ class Popup extends React.Component<PopupProps, PopupState> {
         <div className="footer">
           <span className="copyright">© 2020 LiJianying</span>
           <div style={{ flex: 1 }} />
-          <a
+          <button
+            className="ant-btn ant-btn-link"
+            style={{ fontSize: '12px', padding: 0 }}
             onClick={() => {
               if (chrome.extension) {
                 chrome.runtime.sendMessage({ method: 'openOptionsPage' });
@@ -212,7 +215,7 @@ class Popup extends React.Component<PopupProps, PopupState> {
             }}
           >
             扩展程序选项
-          </a>
+          </button>
         </div>
       </div>
     );

@@ -17,4 +17,23 @@ sharedDb.read().then(() => {
   sharedDb.write();
 });
 
-export { sharedDb };
+class DbHelper {
+  addTranslationRecord(lookUpResult: any) {
+    const oldTranslationRecords: any[] =
+      sharedDb.data?.translationRecords.filter(
+        (v) => v.word !== lookUpResult.word
+      ) || [];
+    const newTranslationRecords = [lookUpResult, ...oldTranslationRecords];
+
+    while ((sharedDb.data?.translationRecords?.length || 0) > 0) {
+      sharedDb.data?.translationRecords.pop();
+    }
+
+    sharedDb.data?.translationRecords.push(...newTranslationRecords);
+    sharedDb.write();
+  }
+}
+
+const sharedDbHelper = new DbHelper();
+
+export { sharedDb, sharedDbHelper };
