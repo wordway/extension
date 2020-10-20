@@ -1,7 +1,7 @@
 .inject-trans-popover-body {
   padding: 16px;
   min-width: 320px;
-  max-width: 352px;
+  max-width: 354px;
   max-height: 520px;
 }
 .translate-result-view .error {
@@ -118,10 +118,17 @@
   font-size: 14px;
 }
 .translate-result-view .images {
+  border: 1px solid #ccc;
   margin-top: 12px;
+  height: 80;
+  display: flex;
+  overflow: scroll;
 }
 .translate-result-view .images .image-item {
   width: 80px;
   height: 80px;
-  border: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+}
+.translate-result-view .images .image-item:first-child {
+  border-left: none;
 }

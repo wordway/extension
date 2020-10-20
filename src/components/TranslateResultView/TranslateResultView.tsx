@@ -26,7 +26,7 @@ interface TranslateResultViewState {
 class TranslateResultView extends React.Component<
   TranslateResultViewProps,
   TranslateResultViewState
-> {
+  > {
   constructor(
     props: TranslateResultViewProps,
     state: TranslateResultViewState
@@ -117,7 +117,7 @@ class TranslateResultView extends React.Component<
     }
   };
 
-  handleClickViewMyNewWords = async () => {};
+  handleClickViewMyNewWords = async () => { };
 
   renderLookUpError = () => {
     const { lookUpError }: TranslateResultViewProps = this.props;
@@ -205,25 +205,25 @@ class TranslateResultView extends React.Component<
               查看生词本
             </Button>
           ) : (
-            <Button
-              key="add-to-my-newwords"
-              type="ghost"
-              size="small"
-              loading={newWordIsAdding}
-              icon={<PlusOutlined />}
-              onClick={() => {
-                if (!loggedInUser) {
-                  chrome.runtime.sendMessage({
-                    method: 'openOptionsPage',
-                  });
-                  return;
-                }
-                this.handleClickAddToNewWords();
-              }}
-            >
-              <>&nbsp;生词本</>
-            </Button>
-          )}
+              <Button
+                key="add-to-my-newwords"
+                type="ghost"
+                size="small"
+                loading={newWordIsAdding}
+                icon={<PlusOutlined />}
+                onClick={() => {
+                  if (!loggedInUser) {
+                    chrome.runtime.sendMessage({
+                      method: 'openOptionsPage',
+                    });
+                    return;
+                  }
+                  this.handleClickAddToNewWords();
+                }}
+              >
+                <>&nbsp;生词本</>
+              </Button>
+            )}
         </div>
         {/* 贴士 */}
         {lookUpResult?.tip && (
@@ -297,12 +297,19 @@ class TranslateResultView extends React.Component<
         {(lookUpResult?.images || []).length > 0 && (
           <div className="images">
             {lookUpResult?.images?.map((imageUrl: any) => (
-              <img
+              // eslint-disable-next-line
+              <a
                 key={imageUrl}
                 className="image-item"
-                src={imageUrl}
-                alt=""
-              />
+                href={translateEngine?.imageBigUrl(imageUrl)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src={imageUrl}
+                  alt=""
+                />
+              </a>
             ))}
           </div>
         )}

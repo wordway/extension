@@ -1,12 +1,14 @@
 @import '../../styles/antd-custom.less';
 
 .translate-result-view {
+
   // 错误
   .error {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
+
     span {
       font-size: 14px;
       font-weight: 500;
@@ -16,6 +18,7 @@
 
 .translate-result-view {
   position: relative;
+
   // 单词
   .word {
     display: flex;
@@ -26,6 +29,7 @@
     .source {
       display: none;
       margin-left: 8px;
+
       img {
         width: 16px;
         height: 16px;
@@ -35,8 +39,9 @@
     h4 {
       margin: 0;
     }
+
     .ant-btn,
-    .ant-btn > .anticon {
+    .ant-btn>.anticon {
       font-size: 12px;
     }
 
@@ -46,19 +51,23 @@
       }
     }
   }
+
   // 贴士
   .tip {
     margin-top: 12px;
     padding: 8px 10px !important;
   }
+
   // 发音
   .ipa {
     margin-top: 8px;
+
     .ipa-item {
       display: inline-block;
       margin-right: 10px;
       color: rgba(0, 0, 0, 0.65);
     }
+
     .ipa-item-soundplay {
       color: @primary-color;
       opacity: 0.9;
@@ -76,20 +85,24 @@
       }
     }
   }
+
   // 释义
   .definitions {
     margin-top: 8px;
     margin-bottom: 0;
     padding: 0;
+
     .definition-item {
       display: flex;
       flex-direction: row;
       margin: 4px 0 0 0;
       padding: 0;
+
       &:first-child {
         margin-top: 0px;
       }
     }
+
     .definition-item-type {
       font-size: 13px;
       font-weight: bold;
@@ -106,6 +119,7 @@
       vertical-align: middle;
       text-align: center;
     }
+
     .definition-item-value {
       font-weight: bold;
       padding: 0;
@@ -115,26 +129,38 @@
       line-height: 20px;
     }
   }
+
   // 时态
   .tenses {
     margin-top: 12px;
+
     .tense-item-name {
       margin: 0 6px 0 0;
       font-size: 14px;
     }
+
     .tense-item-word {
       color: @primary-color;
       margin: 0 6px 0 0;
       font-size: 14px;
     }
   }
+
   // 图片
   .images {
+    border: 1px solid #ccc;
     margin-top: 12px;
+    height: 80;
+    display: flex;
+    overflow: scroll;
+
     .image-item {
       width: 80px;
       height: 80px;
-      border: 1px solid #ccc;
+      border-left: 1px solid #ccc;
+      &:first-child {
+        border-left: none;
+      }
     }
   }
 }
