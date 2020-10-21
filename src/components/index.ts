@@ -2,7 +2,9 @@ export * from './InjectTransHighlight';
 export * from './InjectTransPopover';
 export * from './LoginModal';
 export * from './Popup';
+export * from './SetShortcutKeyModal'
 export * from './ShadowRoot';
+export * from './ShortcutKeyLabel';
 export * from './SoundPlayButton';
 export * from './TranslateResultView';
 export * from './WordItem';

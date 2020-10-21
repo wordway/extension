@@ -26,7 +26,7 @@ interface TranslateResultViewState {
 class TranslateResultView extends React.Component<
   TranslateResultViewProps,
   TranslateResultViewState
-  > {
+> {
   constructor(
     props: TranslateResultViewProps,
     state: TranslateResultViewState
@@ -75,6 +75,7 @@ class TranslateResultView extends React.Component<
     const { loggedInUser } = this.state;
 
     try {
+      if (!loggedInUser) return;
       const r = await sharedHttpClient.get(
         `/wordbooks/newwords-for-user-${loggedInUser?.id}/words/${lookUpResult?.word}`
       );
@@ -114,10 +115,19 @@ class TranslateResultView extends React.Component<
         newWordIsAdded: false,
         newWordIsAdding: false,
       });
+
+      if (e?.message === 'Token has expired') {
+        chrome.runtime.sendMessage({ method: 'openOptionsPage' });
+      }
     }
   };
 
-  handleClickViewMyNewWords = async () => { };
+  handleClickViewMyNewWords = async () => {
+    const { loggedInUser } = this.state;
+    if (loggedInUser) {
+      chrome.runtime.sendMessage({ method: 'openOptionsPage' });
+    }
+  };
 
   renderLookUpError = () => {
     const { lookUpError }: TranslateResultViewProps = this.props;
@@ -141,7 +151,7 @@ class TranslateResultView extends React.Component<
 
   renderLookUpResult = () => {
     const { lookUpResult }: TranslateResultViewProps = this.props;
-    const { loggedInUser, newWordIsAdded, newWordIsAdding } = this.state;
+    const { newWordIsAdded, newWordIsAdding } = this.state;
 
     if (!lookUpResult) return <></>;
 
@@ -176,35 +186,40 @@ class TranslateResultView extends React.Component<
 
     return (
       <>
-        <div className="word">
-          <Title level={4}>{lookUpResult?.word}</Title>
-          <div className="source">
-            <a
-              href={`${translateEngine?.lookUpUrl}${lookUpResult?.word}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src={translateEngine?.icon}
-                alt={translateEngine?.name}
-                title={translateEngine?.name}
-              />
-            </a>
+        <div style={{ display: 'flex' }}>
+          <div className="word-container">
+            <Title className="word" level={4}>
+              {lookUpResult?.word}
+            </Title>
+            <div className="source">
+              <a
+                href={`${translateEngine?.lookUpUrl}${lookUpResult?.word}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src={translateEngine?.icon}
+                  alt={translateEngine?.name}
+                  title={translateEngine?.name}
+                />
+              </a>
+            </div>
           </div>
           <div style={{ flex: 1 }} />
-          {newWordIsAdded ? (
-            <Button
-              key="view-my-newwords"
-              type="ghost"
-              size="small"
-              loading={false}
-              onClick={() => {
-                this.handleClickViewMyNewWords();
-              }}
-            >
-              查看生词本
-            </Button>
-          ) : (
+          <div className="action">
+            {newWordIsAdded ? (
+              <Button
+                key="view-my-newwords"
+                type="ghost"
+                size="small"
+                loading={false}
+                onClick={() => {
+                  this.handleClickViewMyNewWords();
+                }}
+              >
+                查看生词本
+              </Button>
+            ) : (
               <Button
                 key="add-to-my-newwords"
                 type="ghost"
@@ -212,18 +227,13 @@ class TranslateResultView extends React.Component<
                 loading={newWordIsAdding}
                 icon={<PlusOutlined />}
                 onClick={() => {
-                  if (!loggedInUser) {
-                    chrome.runtime.sendMessage({
-                      method: 'openOptionsPage',
-                    });
-                    return;
-                  }
                   this.handleClickAddToNewWords();
                 }}
               >
                 <>&nbsp;生词本</>
               </Button>
             )}
+          </div>
         </div>
         {/* 贴士 */}
         {lookUpResult?.tip && (
@@ -305,10 +315,7 @@ class TranslateResultView extends React.Component<
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img
-                  src={imageUrl}
-                  alt=""
-                />
+                <img src={imageUrl} alt="" />
               </a>
             ))}
           </div>

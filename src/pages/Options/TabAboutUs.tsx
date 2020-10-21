@@ -9,7 +9,7 @@ const TabAboutUs = () => {
     <>
       <Title level={1}>关于我们</Title>
       <Paragraph>© 2020 LiJianying 保留所有版权。</Paragraph>
-      <Title level={4}>统计数据</Title>
+      <Title level={4}>统计</Title>
       <Table
         size="middle"
         showHeader={false}
@@ -40,50 +40,6 @@ const TabAboutUs = () => {
           //   title: '用户数量',
           //   value: '0',
           // },
-        ]}
-        bordered
-        pagination={{ hideOnSinglePage: true }}
-      />
-
-      <Title level={4} style={{ marginTop: '32px' }}>
-        联系我
-      </Title>
-      <Table
-        size="middle"
-        showHeader={false}
-        columns={[
-          {
-            title: '渠道',
-            dataIndex: 'name',
-            key: 'name',
-            render: (value, record) => {
-              return (
-                <span>
-                  {record.name}:&nbsp;&nbsp;{record.link}
-                </span>
-              );
-            },
-          },
-        ]}
-        dataSource={[
-          {
-            key: 'email',
-            name: '邮箱',
-            link: (
-              <a
-                href={'mailto:lijy91@foxmail.com'}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {'lijy91@foxmail.com'}
-              </a>
-            ),
-          },
-          {
-            key: 'wechat',
-            name: '微信',
-            link: 'lijy91',
-          },
         ]}
         bordered
         pagination={{ hideOnSinglePage: true }}

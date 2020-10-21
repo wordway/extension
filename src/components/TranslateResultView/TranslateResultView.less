@@ -1,7 +1,11 @@
 @import '../../styles/antd-custom.less';
 
 .translate-result-view {
+  position: relative;
+  text-align: left;
+}
 
+.translate-result-view {
   // 错误
   .error {
     display: flex;
@@ -17,38 +21,38 @@
 }
 
 .translate-result-view {
-  position: relative;
-
   // 单词
-  .word {
+  .word-container {
     display: flex;
     flex-direction: row;
     align-items: center;
 
-    // 来源
-    .source {
-      display: none;
-      margin-left: 8px;
-
-      img {
-        width: 16px;
-        height: 16px;
-      }
-    }
-
-    h4 {
-      margin: 0;
-    }
-
-    .ant-btn,
-    .ant-btn>.anticon {
-      font-size: 12px;
-    }
-
     &:hover {
       .source {
-        display: inline-flex;
+        visibility: visible;
       }
+    }
+  }
+  .word {
+    margin: 0;
+  }
+
+  // 来源
+  .source {
+    margin-left: 8px;
+    visibility: hidden;
+
+    img {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  // 操作
+  .action {
+    .ant-btn,
+    .ant-btn > .anticon {
+      font-size: 12px;
     }
   }
 
@@ -70,7 +74,7 @@
 
     .ipa-item-soundplay {
       color: @primary-color;
-      opacity: 0.9;
+      opacity: 0.8;
       min-width: 30px;
       height: 30px;
       padding-left: 4px;
@@ -79,6 +83,7 @@
       border: none;
       margin-top: 4px;
       outline: none;
+      cursor: pointer;
 
       &:hover {
         opacity: 1;

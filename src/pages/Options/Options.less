@@ -23,7 +23,10 @@
       align-items: center;
     }
     .ant-layout-sider {
-      min-height: calc(100vh - 64px);
+      position: sticky;
+      top: 16px;
+      max-height: calc(100vh - 16px);
+      overflow-y: auto;
     }
     .ant-layout-content {
       margin-left: 48px;

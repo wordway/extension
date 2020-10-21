@@ -106,8 +106,11 @@ class HttpClient implements ConfigListener {
     return new Promise<R>((resolve, reject) => {
       const message = { method: 'request', arguments: config };
       const responseCallback = ({ response, error }: any) => {
-        if (response) resolve(response);
-        if (error) reject(error);
+        if (error) {
+          reject(error);
+        } else if (response) {
+          resolve(response);
+        }
       };
       chrome.runtime.sendMessage(message, responseCallback);
     });

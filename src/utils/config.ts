@@ -7,6 +7,7 @@ export class Config {
   public translateEngine: string = DEFAULT_TRANSLATE_ENGINE;
   public autoplayPronunciation: string = 'us-pronunciation';
   public selectionTranslateMode: string = 'enable-translate-tooltip';
+  public selectionTranslateShortcutKey: string = 'shift+s';
 }
 
 export interface ConfigListener {
@@ -58,6 +59,11 @@ export default class ConfigManager {
     await this.save();
   }
 
+  async setTranslateEngine(translateEngine: any) {
+    this.config.translateEngine = translateEngine;
+    await this.save();
+  }
+
   async setAutoplayPronunciation(autoplayPronunciation: any) {
     this.config.autoplayPronunciation = autoplayPronunciation;
     await this.save();
@@ -68,8 +74,8 @@ export default class ConfigManager {
     await this.save();
   }
 
-  async setTranslateEngine(translateEngine: any) {
-    this.config.translateEngine = translateEngine;
+  async setSelectionTranslateShortcutKey(selectionTranslateShortcutKey: any) {
+    this.config.selectionTranslateShortcutKey = selectionTranslateShortcutKey;
     await this.save();
   }
 

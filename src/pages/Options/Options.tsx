@@ -9,6 +9,7 @@ import {
   Tabs,
   Typography,
   Popconfirm,
+  Modal,
 } from 'antd';
 import {
   TranslationOutlined,
@@ -75,7 +76,12 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
     if (!this.state.loggedInUser && newConfig.loggedInUser) {
       message.success('登录成功');
     }
-    if (this.state.loggedInUser && !newConfig.loggedInUser) {
+    // 当令牌过期后点击弹框确认时不显示退出提示
+    if (
+      this.state.loggedInUser &&
+      !this._isTokenExpired() &&
+      !newConfig.loggedInUser
+    ) {
       message.success('退出成功');
     }
 
@@ -87,9 +93,35 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
   async _init() {
     let config = await sharedConfigManager.getConfig();
 
-    this.setState({
-      loggedInUser: config.loggedInUser,
-    });
+    this.setState(
+      {
+        loggedInUser: config.loggedInUser,
+      },
+      () => this._showTokenExpiredModal()
+    );
+  }
+
+  _isTokenExpired(): boolean {
+    const { loggedInUser } = this.state;
+    const { jwtToken } = loggedInUser;
+    const nowTimestamp = parseInt((new Date().getTime() / 1000).toString());
+
+    if (jwtToken.expiresIn < nowTimestamp) {
+      return true;
+    }
+    return false;
+  }
+
+  async _showTokenExpiredModal() {
+    if (this._isTokenExpired()) {
+      Modal.error({
+        title: '身份验证会话已过期，请重新登录。',
+        okText: '确定',
+        onOk: () => {
+          sharedConfigManager.setLoggedInUser(null);
+        },
+      });
+    }
   }
 
   _handleClickLogin = () => {
@@ -173,16 +205,6 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
                   }}
                 >
                   <Menu.ItemGroup>
-                    <Menu.Item key={kTabNewWords}>
-                      <HistoryOutlined />
-                      生词本
-                    </Menu.Item>
-                    <Menu.Item key={kTabTranslationHistory}>
-                      <BookOutlined />
-                      翻译记录
-                    </Menu.Item>
-                  </Menu.ItemGroup>
-                  <Menu.ItemGroup title="基本功能">
                     <Menu.Item key={kTabSelectionTranslate}>
                       <TranslationOutlined />
                       划词翻译
@@ -191,6 +213,16 @@ class OptionsPage extends React.Component<any, any> implements ConfigListener {
                       <ReadOutlined />
                       阅读辅助
                     </Menu.Item> */}
+                  </Menu.ItemGroup>
+                  <Menu.ItemGroup title="您的数据">
+                    <Menu.Item key={kTabNewWords}>
+                      <HistoryOutlined />
+                      生词本
+                    </Menu.Item>
+                    <Menu.Item key={kTabTranslationHistory}>
+                      <BookOutlined />
+                      翻译记录
+                    </Menu.Item>
                   </Menu.ItemGroup>
                   <Menu.ItemGroup title="其他设置">
                     {/* <Menu.Item key={kTabExperimentalFeature}>

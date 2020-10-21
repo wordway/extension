@@ -4,6 +4,10 @@
   max-width: 354px;
   max-height: 520px;
 }
+.translate-result-view {
+  position: relative;
+  text-align: left;
+}
 .translate-result-view .error {
   display: flex;
   flex-direction: column;
@@ -14,31 +18,28 @@
   font-size: 14px;
   font-weight: 500;
 }
-.translate-result-view {
-  position: relative;
-}
-.translate-result-view .word {
+.translate-result-view .word-container {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
-.translate-result-view .word .source {
-  display: none;
-  margin-left: 8px;
+.translate-result-view .word-container:hover .source {
+  visibility: visible;
 }
-.translate-result-view .word .source img {
+.translate-result-view .word {
+  margin: 0;
+}
+.translate-result-view .source {
+  margin-left: 8px;
+  visibility: hidden;
+}
+.translate-result-view .source img {
   width: 16px;
   height: 16px;
 }
-.translate-result-view .word h4 {
-  margin: 0;
-}
-.translate-result-view .word .ant-btn,
-.translate-result-view .word .ant-btn > .anticon {
+.translate-result-view .action .ant-btn,
+.translate-result-view .action .ant-btn > .anticon {
   font-size: 12px;
-}
-.translate-result-view .word:hover .source {
-  display: inline-flex;
 }
 .translate-result-view .tip {
   margin-top: 12px;
@@ -54,7 +55,7 @@
 }
 .translate-result-view .ipa .ipa-item-soundplay {
   color: #6478d3;
-  opacity: 0.9;
+  opacity: 0.8;
   min-width: 30px;
   height: 30px;
   padding-left: 4px;
@@ -63,6 +64,7 @@
   border: none;
   margin-top: 4px;
   outline: none;
+  cursor: pointer;
 }
 .translate-result-view .ipa .ipa-item-soundplay:hover {
   opacity: 1;

@@ -1,5 +1,6 @@
 import React from 'react';
-import { List, Table, Typography, Switch, Radio, Select } from 'antd';
+import { List, Table, Typography, Switch, Radio, Button } from 'antd';
+import { SetShortcutKeyModal, ShortcutKeyLabel } from '../../components';
 import translateEngines from '../../networking/translateClient/engines';
 import {
   sharedConfigManager,
@@ -9,14 +10,20 @@ import {
 
 const { Text, Title, Paragraph } = Typography;
 
+interface TabSelectionTranslateState {
+  config?: Config | undefined;
+  setShortcutKeyModalVisible: boolean;
+}
+
 class TabSelectionTranslate
-  extends React.Component<any, any>
+  extends React.Component<any, TabSelectionTranslateState>
   implements ConfigListener {
-  constructor(props: any, state: any) {
+  constructor(props: any, state: TabSelectionTranslateState) {
     super(props, state);
 
     this.state = {
-      config: null,
+      config: undefined,
+      setShortcutKeyModalVisible: false,
     };
   }
 
@@ -56,8 +63,9 @@ class TabSelectionTranslate
       paddingLeft: '24px',
       fontSize: '12px',
     };
+
     return (
-      <>
+      <div>
         <Title level={1}>划词翻译</Title>
         <Paragraph></Paragraph>
         <List>
@@ -111,25 +119,33 @@ class TabSelectionTranslate
           </List.Item>
           <List.Item>
             <List.Item.Meta
-              title="快捷键"
+              title="快捷键取词"
               description={
-                '当自动弹出未启用时，你可以通过快捷键触发显示弹出式翻译。'
+                <>
+                  当禁用自动弹出功能时，可通过快捷键
+                  <ShortcutKeyLabel
+                    style={{ marginLeft: 8, marginRight: 8 }}
+                    shortcutKey={config?.selectionTranslateShortcutKey}
+                  />
+                  触发显示弹出式翻译。
+                </>
               }
             />
-            <Select
-              defaultValue="double_shift"
-              style={{ width: 178 }}
-              onChange={(newValue) => {}}
+            <Button
+              size="small"
+              onClick={() => {
+                this.setState({
+                  setShortcutKeyModalVisible: true,
+                });
+              }}
             >
-              <Select.Option value="double_shift">Double Shift</Select.Option>
-              <Select.Option value="double_command">
-                Double Command
-              </Select.Option>
-            </Select>
+              修改
+            </Button>
           </List.Item>
           <List.Item>
             <List.Item.Meta title="自动播放发音" />
             <Radio.Group
+              size="small"
               value={config?.autoplayPronunciation}
               onChange={(e) => {
                 sharedConfigManager.setAutoplayPronunciation(e.target.value);
@@ -186,7 +202,21 @@ class TabSelectionTranslate
           bordered
           pagination={{ hideOnSinglePage: true }}
         /> */}
-      </>
+        <SetShortcutKeyModal
+          visible={this.state.setShortcutKeyModalVisible}
+          onChange={(shortcutKey) => {
+            this.setState({
+              setShortcutKeyModalVisible: false,
+            });
+            sharedConfigManager.setSelectionTranslateShortcutKey(shortcutKey);
+          }}
+          onCancel={() => {
+            this.setState({
+              setShortcutKeyModalVisible: false,
+            });
+          }}
+        />
+      </div>
     );
   }
 }
