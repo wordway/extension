@@ -6,7 +6,7 @@ export class Config {
   public loggedInUser: any;
   public translateEngine: string = DEFAULT_TRANSLATE_ENGINE;
   public autoplayPronunciation: string = 'us-pronunciation';
-  public selectionTranslateMode: string = 'enable-translate-tooltip';
+  public selectionTranslateMode: string = 'enable-translate-popover';
   public selectionTranslateShortcutKey: string = 'shift+s';
 }
 

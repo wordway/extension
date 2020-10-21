@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert, Modal, Typography } from 'antd';
 import { HotkeysEvent } from 'hotkeys-js';
-import Hotkeys from 'react-hot-keys';
+import ReactHotkeys from 'react-hot-keys';
 
 import './SetShortcutKeyModal.less';
 import ShortcutKeyLabel from '../ShortcutKeyLabel';
@@ -82,7 +82,7 @@ class SetShortcutKeyModal extends React.Component<
         footer={null}
       >
         <div className="set-shortcut-key-modal">
-          <Hotkeys
+          <ReactHotkeys
             keyName="shift+q,shift+w,shift+a,shift+s"
             onKeyDown={this.onKeyDown.bind(this)}
             onKeyUp={this.onKeyUp.bind(this)}
@@ -104,7 +104,7 @@ class SetShortcutKeyModal extends React.Component<
                 <Alert message="将在 1 秒后保存" type="warning" />
               </div>
             )}
-          </Hotkeys>
+          </ReactHotkeys>
         </div>
       </Modal>
     );

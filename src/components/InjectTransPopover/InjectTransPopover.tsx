@@ -64,22 +64,12 @@ class InjectTransPopover extends React.Component<
 
   componentDidMount() {
     window.addEventListener('mouseup', this.onMouseUp);
-    window.addEventListener('mousedown', this.onMouseDown);
-    window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('scroll', this.onScroll);
   }
 
-  onMouseUp = () => {};
-
-  onMouseDown = (e: any) => {
+  onMouseUp = (e: any) => {
     const path = e.path || (e.composedPath && e.composedPath());
     if (path.findIndex(({ id }: any) => id === '___wordway') >= 0) return;
-
-    this.handleClose();
-  };
-
-  onKeyDown = (e: KeyboardEvent) => {
-    if (!e.shiftKey) return;
 
     this.handleClose();
   };
@@ -169,7 +159,9 @@ class InjectTransPopover extends React.Component<
               })}
             >
               <div className={'popper-body'}>
-                <ShadowRoot debug={env.env !== 'production'}>{popperBody}</ShadowRoot>
+                <ShadowRoot debug={env.env !== 'production'}>
+                  {popperBody}
+                </ShadowRoot>
               </div>
               {!(lookUpResult || lookUpError) ? null : (
                 <div

@@ -96,7 +96,7 @@ class TabSelectionTranslate
                       </Radio>
                       <Radio
                         style={radioStyle}
-                        value="enable-translate-tooltip"
+                        value="enable-translate-popover"
                       >
                         显示弹出式翻译
                         <Text type="secondary" style={radioSummaryStyle}>

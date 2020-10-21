@@ -1,9 +1,10 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { ConfigProvider } from 'antd';
+import Hotkeys from 'hotkeys-js';
 
 import { InjectTransPopover } from './components';
-import { sharedConfigManager } from './utils/config';
+import { Config, sharedConfigManager, ConfigListener } from './utils/config';
 
 const ELEMENT_ID = '___wordway';
 
@@ -65,47 +66,51 @@ const injectTransTooltip = ({ autoload = false }: any) => {
   );
 };
 
-const onMessage = (e: any) => {
+window.onmessage = (e: any) => {
   const { source = '', payload } = e.data || {};
   if (source !== 'wordway-extension-bridge') return;
 
   chrome.runtime.sendMessage(payload);
 };
 
-const onMouseUp = (e: any) => {
-  const path = e.path || (e.composedPath && e.composedPath());
-  if (path.length > 0) {
-    const firstTagName = path[0].tagName;
-    if (firstTagName === 'INPUT' || firstTagName === 'TEXTAREA') return;
-    if (path.findIndex(({ id }: any) => id === ELEMENT_ID) >= 0) return;
-  }
+window.onload = async () => {
+  // 获取扩展程序配置
+  let config: Config = await sharedConfigManager.getConfig();
 
-  sharedConfigManager.getConfig().then((config) => {
-    const selectionTranslateMode = config.selectionTranslateMode;
+  // 处理鼠标事件
+  const onMouseUp = (e: any) => {
+    const path = e.path || (e.composedPath && e.composedPath());
+    if (path.length > 0) {
+      const firstTagName = path[0].tagName;
+      if (firstTagName === 'INPUT' || firstTagName === 'TEXTAREA') return;
+      if (path.findIndex(({ id }: any) => id === ELEMENT_ID) >= 0) return;
+    }
 
-    if (selectionTranslateMode === 'disabled') return;
+    if (config.selectionTranslateMode === 'disabled') return;
 
-    injectTransTooltip({
-      autoload: selectionTranslateMode === 'enable-translate-tooltip',
-      scopes: ['word'],
-    });
-  });
+    const autoload =
+      config.selectionTranslateMode === 'enable-translate-popover';
+
+    injectTransTooltip({ autoload });
+  };
+  window.addEventListener('mouseup', onMouseUp);
+
+  // 处理快捷键事件
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.type !== 'keydown') return;
+    injectTransTooltip({ autoload: true });
+  };
+  let selectionTranslateShortcutKey = config.selectionTranslateShortcutKey;
+  Hotkeys(config.selectionTranslateShortcutKey, onKeyDown);
+
+  // 处理配置发生变化时重新相关绑定事件
+  const configListener: ConfigListener = {
+    onConfigChange: (newConfig: Config) => {
+      Hotkeys.unbind(selectionTranslateShortcutKey, onKeyDown);
+      Hotkeys(newConfig.selectionTranslateShortcutKey, onKeyDown);
+
+      config = newConfig;
+    },
+  };
+  sharedConfigManager.addListener(configListener);
 };
-
-const onMouseDown = (e: any) => {};
-
-const onKeyDown = (e: KeyboardEvent) => {
-  if (!e.shiftKey) return;
-
-  sharedConfigManager.getConfig().then((config) => {
-    injectTransTooltip({
-      autoload: true,
-      scopes: ['word'],
-    });
-  });
-};
-
-window.addEventListener('message', onMessage);
-window.addEventListener('mouseup', onMouseUp);
-window.addEventListener('mousedown', onMouseDown);
-window.addEventListener('keydown', onKeyDown);

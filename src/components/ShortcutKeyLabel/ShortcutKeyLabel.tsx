@@ -14,7 +14,7 @@ class ShortcutKeyLabel extends React.Component<
   ShortcutKeyLabelState
 > {
   render() {
-    const { shortcutKey, active } = this.props;
+    const { shortcutKey, active, ...restProps } = this.props;
 
     const shortcutKeys = shortcutKey?.split('+') || [];
 
@@ -22,14 +22,14 @@ class ShortcutKeyLabel extends React.Component<
       return <div>{children}</div>;
     };
     return (
-      <div className="shortcut-key-label" {...this.props}>
+      <div className="shortcut-key-label" {...restProps}>
         {wrapper(
           <div className={active ? 'active' : ''} style={{}}>
             {shortcutKeys.map((v, index) => (
-              <>
+              <span key={v}>
                 <kbd>{v}</kbd>
                 {index < shortcutKeys.length - 1 && <>&nbsp;+&nbsp;</>}
-              </>
+              </span>
             ))}
           </div>
         )}
