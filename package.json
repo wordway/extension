@@ -93,7 +93,7 @@
     "workbox-webpack-plugin": "4.3.1"
   },
   "scripts": {
-    "preinstall": "sh scripts/build-lowdb.sh",
+    "postinstall": "sh scripts/build-lowdb.sh",
     "start": "node scripts/start.js",
     "build": "env-cmd -f .env.production node scripts/build.js",
     "watch": "env-cmd -f .env.development webpack --watch --config ./config/webpack.prod.js",
