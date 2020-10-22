@@ -1,6 +1,6 @@
 import React from 'react';
 import { List, Table, Typography, Switch, Radio, Button } from 'antd';
-import { SetShortcutKeyModal, ShortcutKeyLabel } from '../../components';
+import { SetShortcutModal, ShortcutLabel } from '../../components';
 import translateEngines from '../../networking/translateClient/engines';
 import {
   sharedConfigManager,
@@ -12,7 +12,7 @@ const { Text, Title, Paragraph } = Typography;
 
 interface TabSelectionTranslateState {
   config?: Config | undefined;
-  setShortcutKeyModalVisible: boolean;
+  setShortcutModalVisible: boolean;
 }
 
 class TabSelectionTranslate
@@ -23,7 +23,7 @@ class TabSelectionTranslate
 
     this.state = {
       config: undefined,
-      setShortcutKeyModalVisible: false,
+      setShortcutModalVisible: false,
     };
   }
 
@@ -122,12 +122,12 @@ class TabSelectionTranslate
               title="快捷键取词"
               description={
                 <>
-                  当禁用自动弹出功能时，可通过快捷键
-                  <ShortcutKeyLabel
+                  当禁用自动弹出功能时，通过快捷键
+                  <ShortcutLabel
                     style={{ marginLeft: 8, marginRight: 8 }}
-                    shortcutKey={config?.selectionTranslateShortcutKey}
+                    shortcut={config?.selectionTranslateShortcut}
                   />
-                  触发显示弹出式翻译。
+                  可触发显示弹出式翻译。
                 </>
               }
             />
@@ -135,7 +135,7 @@ class TabSelectionTranslate
               size="small"
               onClick={() => {
                 this.setState({
-                  setShortcutKeyModalVisible: true,
+                  setShortcutModalVisible: true,
                 });
               }}
             >
@@ -202,17 +202,17 @@ class TabSelectionTranslate
           bordered
           pagination={{ hideOnSinglePage: true }}
         /> */}
-        <SetShortcutKeyModal
-          visible={this.state.setShortcutKeyModalVisible}
-          onChange={(shortcutKey) => {
+        <SetShortcutModal
+          visible={this.state.setShortcutModalVisible}
+          onChange={(shortcut) => {
             this.setState({
-              setShortcutKeyModalVisible: false,
+              setShortcutModalVisible: false,
             });
-            sharedConfigManager.setSelectionTranslateShortcutKey(shortcutKey);
+            sharedConfigManager.setSelectionTranslateShortcut(shortcut);
           }}
           onCancel={() => {
             this.setState({
-              setShortcutKeyModalVisible: false,
+              setShortcutModalVisible: false,
             });
           }}
         />

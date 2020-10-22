@@ -7,7 +7,7 @@ export class Config {
   public translateEngine: string = DEFAULT_TRANSLATE_ENGINE;
   public autoplayPronunciation: string = 'us-pronunciation';
   public selectionTranslateMode: string = 'enable-translate-popover';
-  public selectionTranslateShortcutKey: string = 'shift+s';
+  public selectionTranslateShortcut: string = 'shift+s';
 }
 
 export interface ConfigListener {
@@ -74,8 +74,8 @@ export default class ConfigManager {
     await this.save();
   }
 
-  async setSelectionTranslateShortcutKey(selectionTranslateShortcutKey: any) {
-    this.config.selectionTranslateShortcutKey = selectionTranslateShortcutKey;
+  async setSelectionTranslateShortcut(selectionTranslateShortcut: any) {
+    this.config.selectionTranslateShortcut = selectionTranslateShortcut;
     await this.save();
   }
 

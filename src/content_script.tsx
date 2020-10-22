@@ -100,14 +100,14 @@ window.onload = async () => {
     if (e.type !== 'keydown') return;
     injectTransTooltip({ autoload: true });
   };
-  let selectionTranslateShortcutKey = config.selectionTranslateShortcutKey;
-  Hotkeys(config.selectionTranslateShortcutKey, onKeyDown);
+  let selectionTranslateShortcut = config.selectionTranslateShortcut;
+  Hotkeys(config.selectionTranslateShortcut, onKeyDown);
 
   // 处理配置发生变化时重新相关绑定事件
   const configListener: ConfigListener = {
     onConfigChange: (newConfig: Config) => {
-      Hotkeys.unbind(selectionTranslateShortcutKey, onKeyDown);
-      Hotkeys(newConfig.selectionTranslateShortcutKey, onKeyDown);
+      Hotkeys.unbind(selectionTranslateShortcut, onKeyDown);
+      Hotkeys(newConfig.selectionTranslateShortcut, onKeyDown);
 
       config = newConfig;
     },
