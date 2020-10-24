@@ -155,14 +155,18 @@
   .images {
     border: 1px solid #ccc;
     margin-top: 12px;
-    height: 80;
+    width: 323px;
+    height: 80px;
     display: flex;
     overflow: scroll;
-
     .image-item {
-      width: 80px;
-      height: 80px;
       border-left: 1px solid #ccc;
+
+      img {
+        width: 80px;
+        height: 80px;
+      }
+
       &:first-child {
         border-left: none;
       }

@@ -147,7 +147,7 @@ class Popup extends React.Component<PopupProps, PopupState> {
                 chrome.windows.create({
                   url: 'popup.html?mode=standalone',
                   type: 'popup',
-                  width: 360,
+                  width: 354,
                   height: 156,
                 });
                 window.close();
