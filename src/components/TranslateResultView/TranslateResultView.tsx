@@ -3,6 +3,7 @@ import { Alert, Button, Typography } from 'antd';
 import { PlusOutlined, SoundFilled } from '@ant-design/icons';
 import { LookUpResult } from '@wordway/translate-api';
 
+import { Image } from '../../components';
 import { sharedHttpClient } from '../../networking';
 import { sharedConfigManager } from '../../utils/config';
 import translateEngines from '../../networking/translateClient/engines';
@@ -315,7 +316,7 @@ class TranslateResultView extends React.Component<
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img src={imageUrl} alt="" />
+                <Image src={imageUrl} alt="" />
               </a>
             ))}
           </div>

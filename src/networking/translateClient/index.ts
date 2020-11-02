@@ -6,6 +6,16 @@ import YoudaoWebEngine from '@wordway/translate-webengine-youdao';
 
 import { sharedHttpClient } from '../httpClient';
 
+const cloudoptAIEngine = new CloudoptAIEngine();
+const bingWebEngine = new BingWebEngine();
+const youdaoWebEngine = new YoudaoWebEngine();
+
+const sharedTranslateClient: Translate | any = new Translate([
+  cloudoptAIEngine,
+  bingWebEngine,
+  youdaoWebEngine,
+]);
+
 TranslateOverrides.fetch = (
   input: RequestInfo,
   init?: RequestInit
@@ -17,8 +27,14 @@ TranslateOverrides.fetch = (
         ok: true,
         status: response.status,
         statusText: response.statusText,
-        json: () => response.data,
-        text: () => response.data,
+        json: () =>
+          typeof response.data === 'object'
+            ? response.data
+            : JSON.parse(response.data),
+        text: () =>
+          typeof response.data === 'object'
+            ? JSON.stringify(response.data)
+            : response.data,
       });
     };
     const failureCallback = (error: any) => {
@@ -37,15 +53,5 @@ TranslateOverrides.fetch = (
       .catch(failureCallback);
   });
 };
-
-const cloudoptAIEngine = new CloudoptAIEngine();
-const bingWebEngine = new BingWebEngine();
-const youdaoWebEngine = new YoudaoWebEngine();
-
-const sharedTranslateClient: Translate | any = new Translate([
-  cloudoptAIEngine,
-  bingWebEngine,
-  youdaoWebEngine,
-]);
 
 export { sharedTranslateClient };

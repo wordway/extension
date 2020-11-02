@@ -122,15 +122,15 @@
 .translate-result-view .images {
   border: 1px solid #ccc;
   margin-top: 12px;
-  height: 80;
+  width: 323px;
+  height: 82px;
   display: flex;
   overflow: scroll;
 }
 .translate-result-view .images .image-item {
+  border-right: 1px solid #ccc;
+}
+.translate-result-view .images .image-item img {
   width: 80px;
   height: 80px;
-  border-left: 1px solid #ccc;
-}
-.translate-result-view .images .image-item:first-child {
-  border-left: none;
 }

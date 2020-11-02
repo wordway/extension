@@ -21,6 +21,26 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   };
 
+  const _handleMessageRequestBase64Image = () => {
+    const successCallback = (base64Image: any) => sendResponse({ base64Image });
+    const failureCallback = (error: any) => sendResponse({ error });
+
+    const { src } = request.arguments;
+
+    fetch(src || '')
+      .then((response) => response.blob())
+      .then((blob) => {
+        var reader = new FileReader();
+        reader.onload = function () {
+          successCallback(this.result);
+          console.log(this.result);
+        }; // <--- `this.result` contains a base64 data URI
+        reader.readAsDataURL(blob);
+      });
+
+    return true;
+  };
+
   const _handleMessageOpenOptionsPage = () => {
     chrome.runtime.openOptionsPage();
     return true;
@@ -49,6 +69,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.method) {
     case 'request':
       return _handleMessageRequest();
+    case 'requestBase64Image':
+      return _handleMessageRequestBase64Image();
     case 'openOptionsPage':
       return _handleMessageOpenOptionsPage();
     case 'playAudio':

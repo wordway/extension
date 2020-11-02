@@ -1,3 +1,4 @@
+export * from './Image';
 export * from './InjectTransHighlight';
 export * from './InjectTransPopover';
 export * from './LoginModal';

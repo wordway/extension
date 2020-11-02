@@ -2218,6 +2218,7 @@
 "@wordway/translate-api@^0.1.2":
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/@wordway/translate-api/-/translate-api-0.1.2.tgz#3625ae1721cec989ad26c25b7a127818a28f3158"
+  integrity sha512-YgvWMmvPsHTom/CACXiXJKylDo09SeXFDjq6jIrbtKxOa96swtHv4gaGTJbbcrPwX+6Ptg+xPDyflsHmRkT2Mw==
 
 "@wordway/translate-engine-cloudoptai@^0.1.1":
   version "0.1.1"
@@ -2232,9 +2233,10 @@
     "@wordway/translate-api" "^0.1.2"
     cheerio "^1.0.0-rc.3"
 
-"@wordway/translate-webengine-youdao@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@wordway/translate-webengine-youdao/-/translate-webengine-youdao-0.1.2.tgz#5bb195b13c1c2f74a32651896340d4fa08a2b448"
+"@wordway/translate-webengine-youdao@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@wordway/translate-webengine-youdao/-/translate-webengine-youdao-0.1.4.tgz#35d7489ae0f5892620783c69b1187ccd2050c03e"
+  integrity sha512-gg+Bof4OHKEu/+sgWnmdrvBBGZJcmYWo8DD398NiOA+5VNtODoFp/nPVLqC0WTAjnZADw0LXxGwKM26/YJ4wlw==
   dependencies:
     "@wordway/translate-api" "^0.1.2"
     cheerio "^1.0.0-rc.3"
