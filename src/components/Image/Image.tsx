@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+import r from '../../utils/r';
+
 interface ImageProps
   extends React.DetailedHTMLProps<
     React.ImgHTMLAttributes<HTMLImageElement>,
@@ -10,7 +12,7 @@ interface ImageProps
 }
 
 const Image = ({ className, src, width, height, ...restProps }: ImageProps) => {
-  let [base64Image, setBase64Image] = useState<String | null>(null);
+  let [base64Image, setBase64Image] = useState<String | null>(r('/images/placeholder.png'));
 
   const loadData = () => {
     const message = { method: 'requestBase64Image', arguments: { src } };

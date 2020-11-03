@@ -120,17 +120,21 @@
   font-size: 14px;
 }
 .translate-result-view .images {
-  border: 1px solid #ccc;
   margin-top: 12px;
-  width: 323px;
+  width: 325px;
   height: 82px;
   display: flex;
   overflow: scroll;
 }
 .translate-result-view .images .image-item {
   border-right: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
 }
 .translate-result-view .images .image-item img {
   width: 80px;
   height: 80px;
+}
+.translate-result-view .images .image-item:first-child {
+  border-left: 1px solid #ccc;
 }

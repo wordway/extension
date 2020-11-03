@@ -153,19 +153,23 @@
 
   // 图片
   .images {
-    border: 1px solid #ccc;
     margin-top: 12px;
-    width: 323px;
+    width: 325px;
     height: 82px;
     display: flex;
     overflow: scroll;
     .image-item {
       border-right: 1px solid #ccc;
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
 
       img {
         width: 80px;
         height: 80px;
       }
+    }
+    .image-item:first-child {
+      border-left: 1px solid #ccc;
     }
   }
 }
