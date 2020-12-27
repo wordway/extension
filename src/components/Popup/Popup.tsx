@@ -162,6 +162,7 @@ class Popup extends React.Component<PopupProps, PopupState> {
                 <Form.Item name="q">
                   <TextArea
                     rows={2}
+                    autoFocus={true}
                     placeholder="在此输入要翻译的单词或文字"
                     onPressEnter={(e) => {
                       e.preventDefault();
