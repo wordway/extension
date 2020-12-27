@@ -4,12 +4,12 @@
 
 [![chromewebstore][chromewebstore-image]][chromewebstore-url]
 
-[chromewebstore-image]: https://wordway.app/images/ChromeWebStore_BadgeWBorder_v2_496x150.png
+[chromewebstore-image]: screenshots/ChromeWebStore_BadgeWBorder_v2_496x150.png
 [chromewebstore-url]: https://chrome.google.com/webstore/detail/wordway/kcfmelhoffmhnalbpjgdmdnnkfoookfg
 
 ## 屏幕截图
 
-![screenshot-001.jpg](https://wordway-storage.thecode.me/screenshots/extension-v1.0.0-screenshot-001.png?imageView2/2/w/980/format/png)
+![](screenshots/screenshot.png)
 
 ## 讨论组
 
