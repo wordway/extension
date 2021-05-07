@@ -61,7 +61,7 @@
     "less-loader": "^7.0.0",
     "localforage": "^1.9.0",
     "localforage-webextensionstorage-driver": "^2.0.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "lowdb": "https://github.com/typicode/lowdb.git#next",
     "mark.js": "^8.11.1",
     "mini-css-extract-plugin": "0.8.0",
